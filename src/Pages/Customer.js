@@ -3,21 +3,153 @@ import Sidebar from '../Components/Sidebar'
 import Header from '../Components/Header';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash, faPencilSquare } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios"
+import $ from "jquery";
 
-let people = [
-    {
-        name: "Jane Cooper",
-        title: "Regional Paradigm Technician",
-        NIK: "7298902897894",
-        address: "Malang",
-        department: "Optimization",
-        role: "Admin",
-        email: "jane.cooper@example.com",
-        image: "https://bit.ly/33HnjK0",
-    },
-];
 
 export default class Customer extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            customer: [],
+            id_customer: "",
+            nik: "",
+            customer_name: "",
+            address: "",
+            email: "",
+            password: "",
+            role: "",
+            token: "",
+            action: ""
+        }
+
+        if (localStorage.getItem("token")) {
+            if (localStorage.getItem("role") === "admin" ||
+                localStorage.getItem("role") === "resepsionis") {
+                this.state.token = localStorage.getItem("token")
+                this.state.role = localStorage.getItem("role")
+            } else {
+                window.alert("You're not admin or resepsionis!")
+                window.location = "/"
+            }
+        }
+    }
+
+    headerConfig = () => {
+        let header = {
+            headers: { Authorization: `Bearer ${this.state.token}` }
+        }
+        return header;
+    }
+
+    handleChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+
+    handleClose = () => {
+        $("#modal_customer").hide()
+    }
+
+    handleAdd = () => {
+        $("#modal_customer").show()
+        this.setState({
+            id_customer: "",
+            nik: "",
+            customer_name: "",
+            address: "",
+            email: "",
+            password: "",
+            action: "insert"
+        })
+    }
+
+    handleEdit = (item) => {
+        $("#modal_customer").show()
+        this.setState({
+            id_customer: item.id_customer,
+            nik: item.nik,
+            customer_name: item.customer_name,
+            address: item.address,
+            email: item.email,
+            password: item.password,
+            action: "update"
+        })
+    }
+
+    handleSave = (e) => {
+        e.preventDefault()
+
+        let form = {
+            id_customer : this.state.id_customer,
+            nik: this.state.nik,
+            customer_name: this.state.customer_name,
+            address: this.state.address,
+            email: this.state.email,
+            password: this.state.password
+        }
+
+        if (this.state.action === "insert") {
+            let url = "http://localhost:8080/customer/register"
+            axios.post(url, form)
+                .then(response => {
+                    this.getCustomer()
+                    this.handleClose()
+                })
+                
+                .catch(error => {
+                    console.log(error)
+                })
+        } else {
+            let url = "http://localhost:8080/customer/update/" + this.state.id_customer
+            axios.put(url, form, this.headerConfig())
+                .then(response => {
+                    this.getCustomer()
+                    this.handleClose()
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+
+    }
+
+    handleDrop = (id) => {
+        let url = "http://localhost:8080/customer/delete/" + id
+        if (window.confirm("Are you sure to delete this customer ? ")) {
+            axios.delete(url, this.headerConfig())
+                .then(response => {
+                    console.log(response.data.message)
+                    this.getCustomer()
+                })
+                .catch(error => {
+                    if (error.response.status === 500) {
+                        window.alert("You can't delete this data");
+                    }
+                })
+        }
+
+    }
+
+    getCustomer = () => {
+        let url = "http://localhost:8080/customer/"
+        axios.get(url)
+            .then((response) => {
+                // console.log(response)
+                this.setState({
+                    customer: response.data.data
+                })
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    componentDidMount() {
+        this.getCustomer()
+    }
+
     render() {
         return (
             <div class="flex flex-row min-h-screen bg-gray-100 text-gray-800">
@@ -36,7 +168,7 @@ export default class Customer extends React.Component {
                                     className="w-2/3 block w-full px-4 py-2 text-blue-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 "
                                     placeholder="Search..."
                                 />
-                                <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700">
+                                <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => this.handleAdd()}>
                                     <FontAwesomeIcon icon={faPlus} size="" /> Add
                                 </button>
                             </div>
@@ -59,7 +191,7 @@ export default class Customer extends React.Component {
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                                     >
-                                                    NIK
+                                                        NIK
                                                     </th>
                                                     <th
                                                         scope="col"
@@ -88,41 +220,41 @@ export default class Customer extends React.Component {
                                                 </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                                {people.map((person) => (
-                                                    <tr key={person.email}>
+                                                {this.state.customer.map((item, index) => (
+                                                    <tr key={index}>
                                                         <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="text-sm text-gray-900">1</div>
+                                                            <div className="text-sm text-gray-900">{index + 1}</div>
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             <div className="flex items-center">
                                                                 <div className="text-sm font-medium text-gray-900">
-                                                                    {person.NIK}
+                                                                    {item.nik}
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             <div className="flex items-center">
                                                                 <div className="text-sm font-medium text-gray-900">
-                                                                    {person.name}
+                                                                    {item.customer_name}
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             <div className="text-sm text-gray-900">
-                                                                {person.address}
+                                                                {item.address}
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             <div className="text-sm text-gray-900">
-                                                                {person.email}
+                                                                {item.email}
                                                             </div>
                                                         </td>
                                                         {/* px-6 py-4 whitespace-nowrap text-center text-sm font-medium */}
                                                         <td className="px-6 py-4 whitespace-nowrap">
-                                                            <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2">
+                                                            <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEdit(item)}>
                                                                 <FontAwesomeIcon icon={faPencilSquare} size="lg" />
                                                             </button>
-                                                            <button class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded">
+                                                            <button class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded" onClick={() => this.handleDrop(item.id_customer)}>
                                                                 <FontAwesomeIcon icon={faTrash} size="lg" />
                                                             </button>
                                                             {/* <a href="#" className="text-indigo-600 hover:text-indigo-900" > Edit </a>
@@ -145,6 +277,46 @@ export default class Customer extends React.Component {
                         </div>
                     </footer>
                 </main>
+
+                {/* Modal Form */}
+                <div id="modal_customer" tabindex="-1" aria-hidden="true" class="overflow-x-auto fixed top-0 left-0 right-0 z-50 hidden w-full p-4 md:inset-0 h-modal md:h-full bg-tranparent bg-black bg-opacity-50">
+                    <div class="flex lg:h-auto w-auto justify-center ">
+                        <div class="relative bg-white rounded-lg shadow dark:bg-white w-1/3">
+                            <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" onClick={() => this.handleClose()}>
+                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                <span class="sr-only">Tutup modal</span>
+                            </button>
+                            <div class="px-6 py-6 lg:px-8">
+                                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-black">Edit Customer</h3>
+                                <form class="space-y-6" onSubmit={(event) => this.handleSave(event)}>
+                                    <div>
+                                        <label for="nik" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">NIK Customer</label>
+                                        <input type="text" name="nik" id="nik" value={this.state.nik} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan NIK customer" required />
+                                    </div>
+                                    <div>
+                                        <label for="customer_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Nama Customer</label>
+                                        <input type="text" name="customer_name" id="customer_name" value={this.state.customer_name} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan nama customer" required />
+                                    </div>
+                                    <div>
+                                        <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Address Customer</label>
+                                        <input type="text" name="address" id="address" value={this.state.address} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan address customer" required />
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Email Customer</label>
+                                        <input type="email" name="email" id="email" value={this.state.email} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan email customer" required />
+                                    </div>
+                                    <div>
+                                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Password Customer</label>
+                                        <input type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan password customer" required disabled={this.state.action === "update" ? true : false} />
+                                    </div>
+
+                                    <button type="submit" class="w-full text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Simpan</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
 
