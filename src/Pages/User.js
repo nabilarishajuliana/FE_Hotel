@@ -118,7 +118,10 @@ export default class User extends React.Component {
                     this.handleClose()
                 })
                 .catch(error => {
-                    console.log(error)
+                    console.log("error add data",error.response.status)
+                    if (error.response.status === 500) {
+                        window.alert("Failed to add data");
+                    }
                 })
         } else {
             let url = "http://localhost:8080/user/update/" + this.state.id_user

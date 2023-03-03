@@ -87,7 +87,10 @@ export default class Room extends React.Component {
                     this.handleClose()
                 })
                 .catch(error => {
-                    console.log(error)
+                    console.log("error add data",error.response.status)
+                    if (error.response.status === 500) {
+                        window.alert("Failed to add data");
+                    }
                 })
         } else {
             let url = "http://localhost:8080/room/update/" + this.state.id_room
@@ -189,12 +192,12 @@ export default class Room extends React.Component {
                                                     >
                                                         No
                                                     </th>
-                                                    <th
+                                                    {/* <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                                     >
                                                         ID Room
-                                                    </th>
+                                                    </th> */}
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -223,16 +226,16 @@ export default class Room extends React.Component {
                                                             <div className="text-sm text-gray-900">{index + 1}</div>
                                                         </td>
 
-                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                        {/* <td className="px-6 py-4 whitespace-nowrap">
                                                             <div className="flex items-center">
                                                                 <div className="text-sm font-medium text-gray-900">
                                                                     {item.id_room}
                                                                 </div>
                                                             </div>
-                                                        </td>
+                                                        </td> */}
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             <div className="text-sm font-medium text-gray-900">
-                                                                {item.room_number}
+                                                                Room-{item.room_number}
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap">

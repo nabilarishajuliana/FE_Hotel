@@ -99,7 +99,10 @@ export default class Customer extends React.Component {
                 })
                 
                 .catch(error => {
-                    console.log(error)
+                    console.log("error add data",error.response.status)
+                    if (error.response.status === 500) {
+                        window.alert("Failed to add data");
+                    }
                 })
         } else {
             let url = "http://localhost:8080/customer/update/" + this.state.id_customer

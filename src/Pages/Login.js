@@ -43,9 +43,15 @@ export default class Login extends React.Component {
                 } else {
                     alert(response.data.message)
                     this.setState({ message: response.data.message })
+
                 }
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+                console.log("error", error.response.status)
+                if (error.response.status === 500 || error.response.status === 404) {
+                    window.alert("Failed to login dashboard");
+                }
+            })
     }
 
     render() {

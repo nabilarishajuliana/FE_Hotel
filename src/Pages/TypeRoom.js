@@ -100,7 +100,10 @@ export default class TypeRoom extends React.Component {
                     this.handleClose()
                 })
                 .catch(error => {
-                    console.log(error)
+                    console.log("error add data",error.response.status)
+                    if (error.response.status === 500) {
+                        window.alert("Failed to add data");
+                    }
                 })
         } else {
             let url = "http://localhost:8080/room-type/update/" + this.state.id_room_type
@@ -236,7 +239,7 @@ export default class TypeRoom extends React.Component {
                                     </div>
                                     <div>
                                         <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Description Room Type</label>
-                                        <textarea rows="3" type="text" name="description" id="description" value={this.state.description} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan description room type" required disabled={this.state.action === "update" ? true : false} />
+                                        <textarea rows="3" type="text" name="description" id="description" value={this.state.description} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan description room type"  />
                                     </div>
                                     <div>
                                         <label for="photo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Photo Room Type</label>
