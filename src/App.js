@@ -1,12 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Login from './Pages/Login'
-import Dashboard from './Pages/Dashboard'
-import TypeRoom from "./Pages/TypeRoom";
-import Room from "./Pages/Room";
-import User from "./Pages/User";
-import Customer from "./Pages/Customer";
-import HistoryTransaksi from "./Pages/HistoryTransaksi";
+import Login from './PagesDashboard/Login'
+import Dashboard from './PagesDashboard/Dashboard'
+import TypeRoom from "./PagesDashboard/TypeRoom";
+import Room from "./PagesDashboard/Room";
+import User from "./PagesDashboard/User";
+import Customer from "./PagesDashboard/Customer";
+import HistoryTransaksi from "./PagesDashboard/HistoryTransaksi";
+
+import LoginCust from "./PagesForCust/Login";
+import RegisterCust from "./PagesForCust/Register";
+import Home from "./PagesForCust/Home";
 
 function App() {
   return (
@@ -19,6 +23,15 @@ function App() {
         <Route path="/user" element={<User />}></Route>
         <Route path="/customer" element={<Customer />}></Route>
         <Route path="/historytransaksi" element={<HistoryTransaksi />}></Route>
+
+         <Route path="/logincust" element={<LoginCust />}></Route>
+         <Route path="/registercust" element={<RegisterCust />}></Route>
+        <Route path="/home" element={<Home />}></Route>
+       <Route path="/services"></Route>
+        <Route path="/rooms"></Route>
+        <Route path="/mybookings"></Route>
+        <Route path="/available-rooms"></Route>
+
       </Routes>
     </BrowserRouter>
 
