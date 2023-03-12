@@ -68,9 +68,7 @@ export default class Home extends React.Component {
             price: item.price,
             description: item.description,
             photo: item.photo
-
         })
-
     }
 
     handleCloseBooking = () => {
@@ -95,7 +93,6 @@ export default class Home extends React.Component {
     }
     handleAddBooking = () => {
         let form = {
-            // id_booking: this.state.id_booking,
             id_user: this.state.id_user,
             id_customer: this.state.id_customer,
             id_room_type: this.state.id_room_type,
@@ -106,8 +103,6 @@ export default class Home extends React.Component {
             guest_name: this.state.guest_name,
             total_room: this.state.total_room
         }
-        console.log("FORM WOI")
-        console.log(form);
         let url = "http://localhost:8080/booking/add"
         axios.post(url, form, this.headerConfig())
             .then(response => {
@@ -133,7 +128,7 @@ export default class Home extends React.Component {
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
-                        rooms: response.data.room
+                        rooms: response.data.room,
                     })
                     console.log(response.data.room)
                 } else {
@@ -215,7 +210,7 @@ export default class Home extends React.Component {
                             <img className='mt-6 ml-32 mb-10 w-3/5 h-96' src="/assets/PhotoHome.png" alt="/" />
                         </div>
                         <div className='flex flex-col justify-center md:items-start w-full px-2 py-8'>
-                            <p className='py-3 text-5xl md:text-5xl font-bold'>Find Suitable Room</p>
+                            <p className='py-3 text-5xl md:text-5xl font-bold'>Find <span className="text-blue-600">Suitable</span> Room</p>
                             <p className='text-5xl md:text-5xl font-bold mb-8'>With Slippy.</p>
                             <p className='text-md mr-12 mb-4'>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour,or randomised but the majority have suffered alteration </p>
                             {this.state.isLogin ?
@@ -279,14 +274,14 @@ export default class Home extends React.Component {
                                                             ellipsis="..."
                                                         />
                                                     </p>
+                                                    <div class="px-2 py-0.5 text-base mt-2 inline-flex leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                        {item.room.length} room available
+                                                    </div>
                                                 </div>
                                                 <div class="px-6 pt-4 pb-2">
                                                     <button class="mb-2 ml-40 bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button" onClick={() => this.handleDetail(item)}>
-
                                                         Detail
-
                                                     </button>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -299,6 +294,7 @@ export default class Home extends React.Component {
 
                 </div >
 
+                {/* modal detail room */}
                 <div id="modal_detail" tabindex="-1" class="overflow-x-auto fixed top-0 left-0 right-0 z-50 hidden w-full pt-10 pb-10 pl-96 md:inset-0 h-modal md:h-full bg-tranparent bg-black bg-opacity-50" >
                     <div class="relative w-full h-full max-w-lg md:h-auto border-2 border-gray-500 rounded-lg shadow shadow-2xl items-center">
                         <div class="relative bg-white rounded-lg">

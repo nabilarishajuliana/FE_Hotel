@@ -12,7 +12,7 @@ export default class Services extends React.Component {
                 <Navbar />
 
                 <div className="text-center pb-8">
-                    <p className='p-8 text-5xl font-bold'>The Services You Get From Slippy</p>
+                    <p className='p-8 text-5xl font-bold'>The <span className="text-blue-600">Services</span> You Get From Slippy</p>
                     <p className="mr-64 ml-64  text-gray-600 text-xl">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration variations of passages of Lorem Ipsum available</p>
                 </div>
 
