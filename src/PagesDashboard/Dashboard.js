@@ -17,7 +17,6 @@ export default class Dashboard extends React.Component {
 
         }
 
-
         if (localStorage.getItem("token")) {
             if (localStorage.getItem("role") === "admin" ||
                 localStorage.getItem("role") === "resepsionis") {
@@ -28,7 +27,6 @@ export default class Dashboard extends React.Component {
                 window.location = "/"
             }
         }
-        console.log(this.state.user)
     }
 
     headerConfig = () => {
@@ -43,11 +41,9 @@ export default class Dashboard extends React.Component {
         axios
             .get(url, this.headerConfig())
             .then((response) => {
-
                 this.setState({
                     user: response.data.count,
                 });
-                // console.log(response.data.count)
             })
             .catch((error) => {
                 console.log(error);
@@ -58,7 +54,6 @@ export default class Dashboard extends React.Component {
         let url = "http://localhost:8080/customer/"
         axios.get(url)
             .then((response) => {
-                // console.log(response)
                 this.setState({
                     customer: response.data.count
                 })
@@ -96,11 +91,20 @@ export default class Dashboard extends React.Component {
             })
     }
 
+    checkRole = () => {
+        if (this.state.role !== "admin" && this.state.role !== "resepsionis") {
+            localStorage.clear()
+            window.alert("You're not admin or resepsionis!")
+            window.location = '/'
+        }
+    }
+
     componentDidMount() {
         this.getUser();
         this.getCustomer();
         this.getRoom()
         this.getTypeRoom()
+        this.checkRole()
     }
 
     render() {
@@ -111,14 +115,14 @@ export default class Dashboard extends React.Component {
                     <Header />
                     <div class="main-content flex flex-col flex-grow p-4">
                         <div class="flex flex-row h-40">
-                                    <div class="w-1/2 text-gray-700 text-center bg-rose-300 px-4 py-2 m-2 rounded-md border-2  border-rose-400 ">
-                                        <p class="mt-8 text-xl font-medium">Jumlah User</p>
-                                        <p class="text-lg font-bold">{this.state.user}</p>
-                                    </div>
-                                    <div class="w-1/2 text-gray-700 text-center bg-fuchsia-300 px-4 py-2 m-2 rounded-md border-2  border-fuchsia-400 ">
-                                        <p class="mt-8 text-xl font-medium">Jumlah Customer</p>
-                                        <p class="text-lg font-bold">{this.state.customer}</p>
-                                    </div>
+                            <div class="w-1/2 text-gray-700 text-center bg-rose-300 px-4 py-2 m-2 rounded-md border-2  border-rose-400 ">
+                                <p class="mt-8 text-xl font-medium">Jumlah User</p>
+                                <p class="text-lg font-bold">{this.state.user}</p>
+                            </div>
+                            <div class="w-1/2 text-gray-700 text-center bg-fuchsia-300 px-4 py-2 m-2 rounded-md border-2  border-fuchsia-400 ">
+                                <p class="mt-8 text-xl font-medium">Jumlah Customer</p>
+                                <p class="text-lg font-bold">{this.state.customer}</p>
+                            </div>
                         </div>
                         <div class="flex flex-row h-40">
                             <div class="w-1/2 text-gray-700 text-center bg-sky-300 px-4 py-2 m-2 rounded-md border-2  border-sky-400 ">
@@ -133,7 +137,7 @@ export default class Dashboard extends React.Component {
                     </div>
                     <footer class="footer px-4 py-2">
                         <div class="footer-content">
-                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://twitter.com/iaminos">by iAmine</a></p>
+                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://twitter.com/iaminos">by Erairris</a></p>
                         </div>
                     </footer>
                 </main>

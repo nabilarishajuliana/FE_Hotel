@@ -87,9 +87,6 @@ export default class Register extends React.Component {
                                     Register
                                 </button>
                             </div>
-                            {/* <p class="text-sm font-normal text-gray-700 text-center mt-3 ">
-                                Don’t have an account yet? <a href="registercust" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Register</a>
-                            </p> */}
 
                         </form>
                     </div>

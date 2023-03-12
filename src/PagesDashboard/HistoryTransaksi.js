@@ -2,7 +2,7 @@ import React from 'react'
 import Sidebar from '../Components/Sidebar'
 import Header from '../Components/Header';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faPencilSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPencilSquare, faSearch } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios"
 import $ from "jquery";
 import moment from 'moment';
@@ -25,9 +25,10 @@ export default class HistoryTransaksi extends React.Component {
             guest_name: "",
             total_room: "",
             booking_status: "",
-            role : "",
-            token : "",
-            action : ""
+            role: "",
+            token: "",
+            action: "",
+            keyword: ""
 
         }
 
@@ -92,6 +93,28 @@ export default class HistoryTransaksi extends React.Component {
 
     }
 
+    _handleFilter = () => {
+        let data = {
+            keyword: this.state.keyword,
+        }
+        let url = "http://localhost:8080/booking/find/filter"
+        axios.post(url, data)
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        booking: response.data.data
+                    })
+                } else {
+                    alert(response.data.message)
+                    this.setState({ message: response.data.message })
+
+                }
+            })
+            .catch(error => {
+                console.log("error", error.response.status)
+            })
+    }
+
     getBooking = () => {
         let url = "http://localhost:8080/booking"
         axios.get(url)
@@ -106,8 +129,17 @@ export default class HistoryTransaksi extends React.Component {
             })
     }
 
+    checkRole = () => {
+        if (this.state.role !== "admin" && this.state.role !== "resepsionis") {
+            localStorage.clear()
+            window.alert("You're not admin or resepsionis!")
+            window.location = '/'
+        }
+    }
+
     componentDidMount() {
         this.getBooking()
+        this.checkRole()
     }
 
     render() {
@@ -122,19 +154,22 @@ export default class HistoryTransaksi extends React.Component {
                         <p class="text-gray-700">For History Booking Room</p>
 
                         <div className="flex mt-2 flex-row-reverse">
-                            <div className="flex rounded w-1/3">
+                            <div className="flex rounded w-1/3 mr-4">
                                 <input
                                     type="text"
-                                    className="w-2/3 block w-full px-4 py-2 text-blue-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 "
+                                    className="w-2/3 block w-full px-4 py-2 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 "
                                     placeholder="Search..."
+                                    name="keyword"
+                                    value={this.state.keyword}
+                                    onChange={this.handleChange}
                                 />
-                                {/* <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700">
-                                    <FontAwesomeIcon icon={faPlus} size="" /> Add
-                                </button> */}
+                                <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={this._handleFilter}>
+                                    <FontAwesomeIcon icon={faSearch} size="" />
+                                </button>
                             </div>
                         </div>
 
-                        <div className="flex flex-col mt-2">
+                        <div className="flex flex-col mt-2 mr-4">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                                     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -153,12 +188,6 @@ export default class HistoryTransaksi extends React.Component {
                                                     >
                                                         Nama Cust
                                                     </th>
-                                                    {/* <th
-                                                        scope="col"
-                                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                                    >
-                                                        Email Cust
-                                                    </th> */}
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -195,12 +224,15 @@ export default class HistoryTransaksi extends React.Component {
                                                     >
                                                         Status
                                                     </th>
-                                                    <th
-                                                        scope="col"
-                                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                                    >
-                                                        Aksi
-                                                    </th>
+                                                    {this.state.role === 'resepsionis' && (
+                                                        <th
+                                                            scope="col"
+                                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        >
+                                                            Aksi
+                                                        </th>
+                                                    )}
+
                                                 </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
@@ -219,11 +251,7 @@ export default class HistoryTransaksi extends React.Component {
                                                                     {item.name_customer}
                                                                 </div>
                                                             </td>
-                                                            {/* <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm text-gray-900">
-                                                            errisa@gmail.com
-                                                        </div>
-                                                    </td> */}
+
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                                     {item.room_type.name_room_type}
@@ -250,18 +278,33 @@ export default class HistoryTransaksi extends React.Component {
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                                                    {item.booking_status}
-                                                                </span>
+                                                                {item.booking_status === "baru" &&
+                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                                                        {item.booking_status}
+                                                                    </span>
+                                                                }
+                                                                {item.booking_status === "check_in" &&
+                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                                        {item.booking_status}
+                                                                    </span>
+                                                                }
+                                                                {item.booking_status === "check_out" &&
+                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                                        {item.booking_status}
+                                                                    </span>
+                                                                }
+
                                                             </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEditStatus(item)}>
-                                                                    <FontAwesomeIcon
-                                                                        icon={faPencilSquare}
-                                                                        size="lg"
-                                                                    />
-                                                                </button>
-                                                            </td>
+                                                            {this.state.role === 'resepsionis' && (
+                                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                                    <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEditStatus(item)}>
+                                                                        <FontAwesomeIcon
+                                                                            icon={faPencilSquare}
+                                                                            size="lg"
+                                                                        />
+                                                                    </button>
+                                                                </td>
+                                                            )}
                                                         </tr>
                                                     );
                                                 })}
@@ -276,7 +319,7 @@ export default class HistoryTransaksi extends React.Component {
                     </div>
                     <footer class="footer px-4 py-2">
                         <div class="footer-content">
-                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://twitter.com/iaminos">by iAmine</a></p>
+                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://twitter.com/iaminos">by Erairris</a></p>
                         </div>
                     </footer>
                 </main>
@@ -307,13 +350,7 @@ export default class HistoryTransaksi extends React.Component {
                         </div>
                     </div>
                 </div>
-
-
             </div>
-
-
         );
-
-
     }
 }

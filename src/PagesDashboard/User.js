@@ -6,6 +6,7 @@ import {
     faPlus,
     faTrash,
     faPencilSquare,
+    faSearch
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios"
 import $ from "jquery";
@@ -23,7 +24,8 @@ export default class User extends React.Component {
             password: "",
             role: "",
             token: "",
-            action: ""
+            action: "",
+            keyword: ""
         };
 
         if (localStorage.getItem("token")) {
@@ -63,6 +65,28 @@ export default class User extends React.Component {
         })
     }
 
+    _handleFilter = () => {
+        let data = {
+            keyword: this.state.keyword,
+        }
+        let url = "http://localhost:8080/user/find/filter"
+        axios.post(url, data)
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        user: response.data.data
+                    })
+                } else {
+                    alert(response.data.message)
+                    this.setState({ message: response.data.message })
+
+                }
+            })
+            .catch(error => {
+                console.log("error", error.response.status)
+            })
+    }
+
     handleAdd = () => {
         $("#modal_user").show();
         this.setState({
@@ -92,7 +116,7 @@ export default class User extends React.Component {
 
     handleSave = (e) => {
         e.preventDefault()
-        
+
         let form = new FormData()
         form.append("id_user", this.state.id_user)
         form.append("user_name", this.state.user_name)
@@ -118,7 +142,7 @@ export default class User extends React.Component {
                     this.handleClose()
                 })
                 .catch(error => {
-                    console.log("error add data",error.response.status)
+                    console.log("error add data", error.response.status)
                     if (error.response.status === 500) {
                         window.alert("Failed to add data");
                     }
@@ -146,7 +170,7 @@ export default class User extends React.Component {
                     this.getUser()
                 })
                 .catch(error => {
-                    if(error.response.status === 500){
+                    if (error.response.status === 500) {
                         window.alert("You can't delete this data");
                     }
                 })
@@ -156,9 +180,8 @@ export default class User extends React.Component {
     getUser = () => {
         let url = "http://localhost:8080/user";
         axios
-            .get(url, this.headerConfig())
+            .get(url)
             .then((response) => {
-                // console.log(response);
                 this.setState({
                     user: response.data.data,
                 });
@@ -168,8 +191,17 @@ export default class User extends React.Component {
             });
     };
 
+    checkRole = () => {
+        if (this.state.role !== "admin" && this.state.role !== "resepsionis") {
+            localStorage.clear()
+            window.alert("You're not admin or resepsionis!")
+            window.location = '/'
+        }
+    }
+
     componentDidMount() {
         this.getUser();
+        this.checkRole()
     }
 
     render() {
@@ -183,20 +215,28 @@ export default class User extends React.Component {
                         <h1 class="font-bold text-xl text-black-700">Daftar User</h1>
                         <p class="text-gray-700">For admin and Resepsionis</p>
 
-                        <div className="flex mt-2 flex-row-reverse">
-                            <div className="flex rounded w-1/3">
+                        <div className="flex mt-2 flex-row-reverse mr-4">
+                            <div className="flex rounded w-1/2">
                                 <input
                                     type="text"
-                                    className="w-2/3 block w-full px-4 py-2 text-blue-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 "
+                                    className="w-2/3 block w-full px-4 py-2 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                                     placeholder="Search..."
+                                    name="keyword"
+                                    value={this.state.keyword}
+                                    onChange={this.handleChange}
                                 />
-                                <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => this.handleAdd()}>
-                                    <FontAwesomeIcon icon={faPlus} /> Add
+                                <button className="w-1/8 ml-2 px-4 text-white bg-blue-100 border border-1 border-blue-600 rounded hover:bg-blue-200" onClick={this._handleFilter}>
+                                    <FontAwesomeIcon icon={faSearch} color="blue" />
                                 </button>
+                                {this.state.role === "admin" &&
+                                    <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => this.handleAdd()}>
+                                        <FontAwesomeIcon icon={faPlus} size="" /> Add
+                                    </button>
+                                }
                             </div>
                         </div>
 
-                        <div className="flex flex-col mt-2">
+                        <div className="flex flex-col mt-2 mr-4">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                                     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -233,12 +273,15 @@ export default class User extends React.Component {
                                                     >
                                                         Role
                                                     </th>
-                                                    <th
-                                                        scope="col"
-                                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                                    >
-                                                        Aksi
-                                                    </th>
+                                                    {this.state.role === "admin" &&
+                                                        <th
+                                                            scope="col"
+                                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        >
+                                                            Aksi
+                                                        </th>
+                                                    }
+
                                                 </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
@@ -270,24 +313,30 @@ export default class User extends React.Component {
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                                                    {item.role}
-                                                                </span>
+                                                                {item.role === "admin" &&
+                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                                        {item.role}
+                                                                    </span>
+                                                                }
+                                                                {item.role === "resepsionis" &&
+                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                                                        {item.role}
+                                                                    </span>
+                                                                }
                                                             </td>
-                                                            {/* px-6 py-4 whitespace-nowrap text-center text-sm font-medium */}
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEdit(item)}>
-                                                                    <FontAwesomeIcon
-                                                                        icon={faPencilSquare}
-                                                                        size="lg"
-                                                                    />
-                                                                </button>
-                                                                <button class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded" onClick={() => this.handleDrop(item.id_user)}>
-                                                                    <FontAwesomeIcon icon={faTrash} size="lg" />
-                                                                </button>
-                                                                {/* <a href="#" className="text-indigo-600 hover:text-indigo-900" > Edit </a>
-                                                                <a href="#" className="text-indigo-600 hover:text-indigo-900" > hapus </a> */}
-                                                            </td>
+                                                            {this.state.role === "admin" &&
+                                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                                    <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEdit(item)}>
+                                                                        <FontAwesomeIcon
+                                                                            icon={faPencilSquare}
+                                                                            size="lg"
+                                                                        />
+                                                                    </button>
+                                                                    <button class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded" onClick={() => this.handleDrop(item.id_user)}>
+                                                                        <FontAwesomeIcon icon={faTrash} size="lg" />
+                                                                    </button>
+                                                                </td>
+                                                            }
                                                         </tr>
                                                     );
                                                 })}
@@ -303,7 +352,7 @@ export default class User extends React.Component {
                         <div class="footer-content">
                             <p class="text-sm text-gray-600 text-center">
                                 © Brandname 2023. All rights reserved.{" "}
-                                <a href="https://twitter.com/iaminos">by iAmine</a>
+                                <a href="https://twitter.com/iaminos">by Erairris</a>
                             </p>
                         </div>
                     </footer>
@@ -330,7 +379,7 @@ export default class User extends React.Component {
                                     </div>
                                     <div>
                                         <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Password User</label>
-                                        <input type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan email user" required disabled={this.state.action === "update" ? true : false}/>
+                                        <input type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan email user" required disabled={this.state.action === "update" ? true : false} />
                                     </div>
                                     <div>
                                         <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Role</label>
@@ -351,11 +400,7 @@ export default class User extends React.Component {
                         </div>
                     </div>
                 </div>
-
-
             </div>
-
-
         );
     }
 }

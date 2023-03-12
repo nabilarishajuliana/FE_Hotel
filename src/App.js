@@ -11,6 +11,9 @@ import HistoryTransaksi from "./PagesDashboard/HistoryTransaksi";
 import LoginCust from "./PagesForCust/Login";
 import RegisterCust from "./PagesForCust/Register";
 import Home from "./PagesForCust/Home";
+import Services from "./PagesForCust/Services";
+import Rooms from "./PagesForCust/Rooms";
+import MyBookings from "./PagesForCust/MyBookings";
 
 function App() {
   return (
@@ -24,12 +27,12 @@ function App() {
         <Route path="/customer" element={<Customer />}></Route>
         <Route path="/historytransaksi" element={<HistoryTransaksi />}></Route>
 
-         <Route path="/logincust" element={<LoginCust />}></Route>
-         <Route path="/registercust" element={<RegisterCust />}></Route>
+        <Route path="/logincust" element={<LoginCust />}></Route>
+        <Route path="/registercust" element={<RegisterCust />}></Route>
         <Route path="/home" element={<Home />}></Route>
-       <Route path="/services"></Route>
-        <Route path="/rooms"></Route>
-        <Route path="/mybookings"></Route>
+        <Route path="/services" element={<Services />}></Route>
+        <Route path="/rooms" element={<Rooms />}></Route>
+        <Route path="/mybookings" element={<MyBookings />}></Route>
         <Route path="/available-rooms"></Route>
 
       </Routes>

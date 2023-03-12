@@ -4,7 +4,7 @@ import Sidebar from '../Components/Sidebar'
 import Header from '../Components/Header';
 import '../styles/room.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPencilSquare, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPencilSquare, faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios"
 import $ from "jquery";
 
@@ -20,7 +20,8 @@ export default class TypeRoom extends React.Component {
             photo: "",
             role: "",
             token: "",
-            action: ""
+            action: "",
+            keyword: ""
         }
 
         if (localStorage.getItem("token")) {
@@ -52,6 +53,23 @@ export default class TypeRoom extends React.Component {
         this.setState({
             photo: e.target.files[0]
         })
+    }
+
+    handleCloseDetail = () => {
+        $("#modal_detail").hide()
+    }
+
+    handleDetail = (item) => {
+        $("#modal_detail").show()
+        this.setState({
+            id_room_type: item.id_room_type,
+            name_room_type: item.name_room_type,
+            price: item.price,
+            description: item.description,
+            photo: item.photo
+
+        })
+
     }
 
     handleClose = () => {
@@ -100,7 +118,7 @@ export default class TypeRoom extends React.Component {
                     this.handleClose()
                 })
                 .catch(error => {
-                    console.log("error add data",error.response.status)
+                    console.log("error add data", error.response.status)
                     if (error.response.status === 500) {
                         window.alert("Failed to add data");
                     }
@@ -134,6 +152,28 @@ export default class TypeRoom extends React.Component {
         }
     }
 
+    _handleFilter = () => {
+        let data = {
+            keyword: this.state.keyword,
+        }
+        let url = "http://localhost:8080/room-type/find/filter"
+        axios.post(url, data)
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({
+                        typeroom: response.data.data
+                    })
+                } else {
+                    alert(response.data.message)
+                    this.setState({ message: response.data.message })
+
+                }
+            })
+            .catch(error => {
+                console.log("error", error.response.status)
+            })
+    }
+
     getTypeRoom = () => {
         let url = "http://localhost:8080/room-type"
         axios.get(url)
@@ -147,10 +187,18 @@ export default class TypeRoom extends React.Component {
             })
     }
 
-    componentDidMount() {
-        this.getTypeRoom()
+    checkRole = () => {
+        if (this.state.role !== "admin" && this.state.role !== "resepsionis") {
+            localStorage.clear()
+            window.alert("You're not admin or resepsionis!")
+            window.location = '/'
+        }
     }
 
+    componentDidMount() {
+        this.getTypeRoom()
+        this.checkRole()
+    }
 
     render() {
         return (
@@ -164,56 +212,67 @@ export default class TypeRoom extends React.Component {
                                 <div className="flex rounded w-1/2">
                                     <input
                                         type="text"
-                                        className="w-5/6 block w-full px-4 py-2 text-blue-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 "
+                                        className="w-4/6 block w-full px-4 py-2 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                                         placeholder="Search..."
+                                        name="keyword"
+                                        value={this.state.keyword}
+                                        onChange={this.handleChange}
                                     />
-                                    <button className="w-1/5 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => this.handleAdd()}>
-                                        <FontAwesomeIcon icon={faPlus} /> Add
+                                    <button className="w-1/8 ml-2 px-4 text-white bg-blue-100 border border-1 border-blue-600 rounded hover:bg-blue-200" onClick={this._handleFilter}>
+                                        <FontAwesomeIcon icon={faSearch} color="blue" />
                                     </button>
+                                    {this.state.role === "admin" &&
+                                        <button className="w-1/5 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => this.handleAdd()}>
+                                            <FontAwesomeIcon icon={faPlus} /> Add
+                                        </button>
+                                    }
                                 </div>
                             </div>
                         </div>
                         <div class="grid grid-cols-3 gap-4">
-                            {this.state.typeroom.map((item, index) => (
-                                <div class="col-span-1">
-                                    {/* Card untuk type room */}
-                                    <div class="CardEvent" key={index}>
-                                        <div class="max-w-sm rounded overflow-hidden shadow-lg">
-                                            <div className='container'>
-                                                <img class="w-full h-48" src={"http://localhost:8080/uploads/image/" + item.photo} />
-                                                <button class='btn' onClick={() => this.handleDrop(item.id_room_type)}><FontAwesomeIcon icon={faTrash} size="lg" color="red" /></button>
-                                                <button class='btn1' onClick={() => this.handleEdit(item)}><FontAwesomeIcon icon={faPencilSquare} size="xl" color="orange" /></button>
-                                            </div>
-                                            <div class="px-6 py-4">
-                                                <div class="font-bold text-2xl mb-2">{item.name_room_type}</div>
-                                                <div class="font-bold text-xl mb-2 text-blue-600">{item.price}/night</div>
-                                                <p class="text-gray-700 text-base">
-                                                    <LinesEllipsis
-                                                        text={item.description}
-                                                        maxLine="3"
-                                                        ellipsis="..."
-                                                    />
-                                                </p>
-                                            </div>
-                                            <div class="px-6 pt-4 pb-2">
-                                                <button class="mb-2 ml-48 bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button">
-                                                    <a href="/dashboard">
-                                                        Detail
-                                                    </a>
-                                                </button>
+                            {this.state.typeroom.map((item, index) => {
+                                return (
+                                    <div class="col-span-1">
+                                        {/* Card untuk type room */}
+                                        <div class="CardEvent" key={index}>
+                                            <div class="max-w-sm rounded overflow-hidden shadow-lg border-2 border-gray-200 bg-gray-100">
+                                                <div className='container'>
+                                                    <img class="w-full h-48" src={"http://localhost:8080/uploads/image/" + item.photo} />
+                                                    {this.state.role === "admin" &&
+                                                        <>
+                                                            <button class='btn' onClick={() => this.handleDrop(item.id_room_type)}><FontAwesomeIcon icon={faTrash} size="lg" color="red" /></button>
+                                                            <button class='btn1' onClick={() => this.handleEdit(item)}><FontAwesomeIcon icon={faPencilSquare} size="xl" color="orange" /></button>
+                                                        </>
+                                                    }
 
+                                                </div>
+                                                <div class="px-6 py-4">
+                                                    <div class="font-bold text-2xl mb-2">{item.name_room_type}</div>
+                                                    <div class="font-bold text-xl mb-2 text-blue-600">{item.price}/night</div>
+                                                    <p class="text-gray-700 text-base">
+                                                        <LinesEllipsis
+                                                            text={item.description}
+                                                            maxLine="3"
+                                                            ellipsis="..." />
+                                                    </p>
+                                                </div>
+                                                <div class="px-6 pt-4 pb-2">
+                                                    <button class="mb-2 ml-48 bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button" onClick={() => this.handleDetail(item)}>
+                                                        Detail
+                                                    </button>
+
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                </div>
-                            ))}
+                                    </div>
+                                );
+                            })}
                         </div>
-                        {/* </div> */}
                     </div>
                     <footer class="footer px-4 py-2">
                         <div class="footer-content">
-                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://twitter.com/iaminos">by iAmine</a></p>
+                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://twitter.com/iaminos">by Erairris</a></p>
                         </div>
                     </footer>
                 </main >
@@ -239,7 +298,7 @@ export default class TypeRoom extends React.Component {
                                     </div>
                                     <div>
                                         <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Description Room Type</label>
-                                        <textarea rows="3" type="text" name="description" id="description" value={this.state.description} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan description room type"  />
+                                        <textarea rows="3" type="text" name="description" id="description" value={this.state.description} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan description room type" />
                                     </div>
                                     <div>
                                         <label for="photo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Photo Room Type</label>
@@ -253,12 +312,35 @@ export default class TypeRoom extends React.Component {
                     </div>
                 </div>
 
-
+                {/* modal detail */}
+                <div id="modal_detail" tabindex="-1" class="overflow-x-auto fixed top-0 left-0 right-0 z-50 hidden w-full pt-10 pb-10 pl-96 md:inset-0 h-modal md:h-full bg-tranparent bg-black bg-opacity-50" >
+                    <div class="relative w-full h-full max-w-lg md:h-auto border-2 border-gray-500 rounded-lg shadow shadow-2xl items-center">
+                        <div class="relative bg-white rounded-lg">
+                            <div class="flex items-center justify-between p-5 border-b rounded-t border-gray-500">
+                                <h3 class="p-2 text-xl font-medium text-gray-900 ">
+                                    {this.state.name_room_type} Room
+                                </h3>
+                                <button type="button" class="text-gray-400 bg-transparent hover:bg-red-500 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center hover:bg-gray-600 hover:text-white" data-modal-hide="medium-modal" onClick={() => this.handleCloseDetail()}>
+                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    <span class="sr-only">Close modal</span>
+                                </button>
+                            </div>
+                            <div class="p-6">
+                                <div className='container'>
+                                    <img class="rounded-md w-200 h-100" src={"http://localhost:8080/uploads/image/" + this.state.photo} />
+                                </div>
+                                <div class="px-2 py-4">
+                                    <div class="font-bold text-2xl mb-2">{this.state.name_room_type}</div>
+                                    <div class="font-bold text-xl mb-2 text-blue-600">{this.state.price}/night</div>
+                                    <p class="text-black-700 text-base">
+                                        {this.state.description}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div >
-
-
         );
-
-
     }
 }
