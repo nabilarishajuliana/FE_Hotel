@@ -14,6 +14,8 @@ import Home from "./PagesForCust/Home";
 import Services from "./PagesForCust/Services";
 import Rooms from "./PagesForCust/Rooms";
 import MyBookings from "./PagesForCust/MyBookings";
+import StrukBooking from "./PagesForCust/StrukBooking";
+
 
 function App() {
   return (
@@ -33,7 +35,7 @@ function App() {
         <Route path="/services" element={<Services />}></Route>
         <Route path="/rooms" element={<Rooms />}></Route>
         <Route path="/mybookings" element={<MyBookings />}></Route>
-        <Route path="/available-rooms"></Route>
+        <Route path="/struck" element={<StrukBooking />}></Route>
 
       </Routes>
     </BrowserRouter>

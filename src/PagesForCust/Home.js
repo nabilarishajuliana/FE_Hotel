@@ -82,7 +82,7 @@ export default class Home extends React.Component {
             id_customer: this.state.id_customer,
             id_room_type: "",
             booking_number: Math.floor(Math.random() * 90000) + 10000,
-            booking_date: moment().format('DD-MM-YYYY'),
+            booking_date: moment().format('YYYY-MM-DD'),
             check_in_date: "",
             check_out_date: "",
             guest_name: "",
@@ -171,7 +171,7 @@ export default class Home extends React.Component {
     }
 
     getUser = () => {
-        let url = "http://localhost:8080/user/role/customer"
+        let url = "http://localhost:8080/user/role/resepsionis"
         axios.get(url)
             .then(response => {
                 this.setState({
@@ -360,7 +360,7 @@ export default class Home extends React.Component {
                                         </div>
                                         <div>
                                             <label for="booking_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Booking Date</label>
-                                            <input type="text" name="booking_date" id="booking_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Booking Date" value={moment().format('DD-MM-YYYY')} onChange={this.handleChange} required disabled />
+                                            <input type="text" name="booking_date" id="booking_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Booking Date" value={moment().format('YYYY-MM-DD')} onChange={this.handleChange} required disabled />
                                         </div>
                                         <div>
                                             <label for="check_in_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Check-In Date</label>

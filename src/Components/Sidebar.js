@@ -16,6 +16,11 @@ export default class Sidebar extends React.Component {
         if (window.confirm("Are you sure to logout")) {
             window.location = '/'
             localStorage.clear()
+            localStorage.removeItem("id")
+            localStorage.removeItem("token")
+            localStorage.removeItem("role")
+            localStorage.removeItem("email")
+            localStorage.removeItem("username")
         }
     }
 
@@ -113,7 +118,7 @@ export default class Sidebar extends React.Component {
                                 <span class="ml-3">History Transaksi</span>
                             </a>
                         </li>
-                        <li class="my-px">
+                        <li class="my-px" onClick={() => this.logOut()}>
                             <a
                                 href="/"
                                 class="flex flex-row items-center h-10 px-3 rounded-lg text-blue-600 hover:bg-blue-100 hover:text-blue-800 mt-32"
@@ -130,7 +135,7 @@ export default class Sidebar extends React.Component {
                                     >
                                         <path
                                             d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
-                                        />
+                                            />
                                     </svg>
                                 </span>
                                 <span class="ml-2" onClick={() => this.logOut()}>Logout</span>

@@ -19,6 +19,10 @@ export default class Navbar extends Component {
     logout = () => {
         if (window.confirm("Are you sure to logout?")) {
             localStorage.clear()
+            localStorage.removeItem("id")
+            localStorage.removeItem("token")
+            localStorage.removeItem("role")
+            localStorage.removeItem("email")
             this.setState({
                 isLogin: false
             })
@@ -43,7 +47,7 @@ export default class Navbar extends Component {
                     <div class="flex md:order-2">
                         {this.state.isLogin ? (
                             <>
-                                <NavLink to="/home" className="no-underline text-gray-800 hover:text-blue-800 px-3 py-2 rounded-md text-2xl font-medium" aria-current="page" id="profile"><FontAwesomeIcon icon={faUser} /></NavLink>
+                                {/* <NavLink to="/home" className="no-underline text-gray-800 hover:text-blue-800 px-3 py-2 rounded-md text-2xl font-medium" aria-current="page" id="profile"><FontAwesomeIcon icon={faUser} /></NavLink> */}
                                 <button onClick={() => this.logout()} className="no-underline text-gray-800 px-3 py-2 hover:text-blue-800 rounded-md text-2xl font-medium" aria-current="page" ><FontAwesomeIcon icon={faSignOut} /></button>
 
                             </>
