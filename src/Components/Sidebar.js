@@ -97,7 +97,7 @@ export default class Sidebar extends React.Component {
                             </a>
                         </li>
                         <li class="my-px">
-                            <a
+                            {/* <a
                                 href="/customer"
                                 class="flex flex-row items-center h-10 px-3 rounded-lg text-blue-600 hover:bg-blue-100 hover:text-blue-800 font-base"
                             >
@@ -105,7 +105,7 @@ export default class Sidebar extends React.Component {
                                     <FontAwesomeIcon icon={faUsers} color="blue" />
                                 </span>
                                 <span class="ml-2">Customer</span>
-                            </a>
+                            </a> */}
                         </li>
                         <li class="my-px">
                             <a

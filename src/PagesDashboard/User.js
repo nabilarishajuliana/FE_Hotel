@@ -17,12 +17,13 @@ export default class User extends React.Component {
         super();
         this.state = {
             user: [],
-            id_user: "",
-            user_name: "",
-            photo: "",
+            id: "",
+            nama_user: "",
+            foto: "",
             email: "",
             password: "",
             role: "",
+            roleup:"",
             token: "",
             action: "",
             keyword: ""
@@ -34,7 +35,7 @@ export default class User extends React.Component {
                 localStorage.getItem("role") === "resepsionis"
             ) {
                 this.state.token = localStorage.getItem("token");
-                this.state.role = localStorage.getItem("role");
+                this.state.roleup = localStorage.getItem("role");
             } else {
                 window.alert("You're not admin or resepsionis!");
                 window.location = "/";
@@ -61,7 +62,7 @@ export default class User extends React.Component {
 
     handleFile = (e) => {
         this.setState({
-            photo: e.target.files[0]
+            foto: e.target.files[0]
         })
     }
 
@@ -69,13 +70,15 @@ export default class User extends React.Component {
         let data = {
             keyword: this.state.keyword,
         }
-        let url = "http://localhost:8080/user/find/filter"
-        axios.post(url, data)
+        let url = "http://localhost:8000/user/findUser"
+        axios.post(url, data, this.headerConfig())
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
                         user: response.data.data
                     })
+                    console.log(data)
+
                 } else {
                     alert(response.data.message)
                     this.setState({ message: response.data.message })
@@ -90,9 +93,9 @@ export default class User extends React.Component {
     handleAdd = () => {
         $("#modal_user").show();
         this.setState({
-            id_user: "",
-            user_name: "",
-            photo: "",
+            id: "",
+            nama_user: "",
+            foto: "",
             email: "",
             password: "",
             role: "",
@@ -104,9 +107,9 @@ export default class User extends React.Component {
     handleEdit = (item) => {
         $("#modal_user").show();
         this.setState({
-            id_user: item.id_user,
-            user_name: item.user_name,
-            photo: item.photo,
+            id: item.id,
+            nama_user: item.nama_user,
+            foto: item.foto,
             email: item.email,
             password: item.password,
             role: item.role,
@@ -118,25 +121,25 @@ export default class User extends React.Component {
         e.preventDefault()
 
         let form = new FormData()
-        form.append("id_user", this.state.id_user)
-        form.append("user_name", this.state.user_name)
-        form.append("photo", this.state.photo)
+        form.append("id", this.state.id)
+        form.append("nama_user", this.state.nama_user)
+        form.append("foto", this.state.foto)
         form.append("email", this.state.email)
         form.append("password", this.state.password)
         form.append("role", this.state.role)
 
-        let data = {
-            id_user: this.state.id_user,
-            user_name: this.state.user_name,
-            photo: this.state.photo,
-            email: this.state.email,
-            password: this.state.password,
-            role: this.state.role,
-        }
+        // let data = {
+        //     id: this.state.id,
+        //     nama_user: this.state.nama_user,
+        //     foto: this.state.foto,
+        //     email: this.state.email,
+        //     password: this.state.password,
+        //     role: this.state.role,
+        // }
 
         if (this.state.action === "insert") {
-            let url = "http://localhost:8080/user/add"
-            axios.post(url, form)
+            let url = "http://localhost:8000/user/addUser"
+            axios.post(url, form, this.headerConfig())
                 .then(response => {
                     this.getUser()
                     this.handleClose()
@@ -148,7 +151,7 @@ export default class User extends React.Component {
                     }
                 })
         } else {
-            let url = "http://localhost:8080/user/update/" + this.state.id_user
+            let url = "http://localhost:8000/user/updateUser/" + this.state.id
             axios.put(url, form, this.headerConfig())
                 .then(response => {
                     this.getUser()
@@ -162,7 +165,7 @@ export default class User extends React.Component {
     }
 
     handleDrop = (id) => {
-        let url = "http://localhost:8080/user/delete/" + id
+        let url = "http://localhost:8000/user/deleteUser/" + id
         if (window.confirm("Are you sure to delete this customer ? ")) {
             axios.delete(url, this.headerConfig())
                 .then(response => {
@@ -178,9 +181,9 @@ export default class User extends React.Component {
     }
 
     getUser = () => {
-        let url = "http://localhost:8080/user";
+        let url = "http://localhost:8000/user/getAllUser";
         axios
-            .get(url)
+            .get(url, this.headerConfig())
             .then((response) => {
                 this.setState({
                     user: response.data.data,
@@ -192,7 +195,7 @@ export default class User extends React.Component {
     };
 
     checkRole = () => {
-        if (this.state.role !== "admin" && this.state.role !== "resepsionis") {
+        if (this.state.roleup !== "admin" && this.state.roleup !== "resepsionis") {
             localStorage.clear()
             window.alert("You're not admin or resepsionis!")
             window.location = '/'
@@ -228,7 +231,7 @@ export default class User extends React.Component {
                                 <button className="w-1/8 ml-2 px-4 text-white bg-blue-100 border border-1 border-blue-600 rounded hover:bg-blue-200" onClick={this._handleFilter}>
                                     <FontAwesomeIcon icon={faSearch} color="blue" />
                                 </button>
-                                {this.state.role === "admin" &&
+                                {this.state.roleup === "admin" &&
                                     <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => this.handleAdd()}>
                                         <FontAwesomeIcon icon={faPlus} size="" /> Add
                                     </button>
@@ -273,7 +276,7 @@ export default class User extends React.Component {
                                                     >
                                                         Role
                                                     </th>
-                                                    {this.state.role === "admin" &&
+                                                    {this.state.roleup === "admin" &&
                                                         <th
                                                             scope="col"
                                                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -289,13 +292,17 @@ export default class User extends React.Component {
                                                     return (
                                                         <tr key={index}>
                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                                <div className="text-sm text-gray-900">{index + 1}</div>
+                                                                <div className="text-sm text-gray-900">
+                                                                    {index + 1}
+                                                                </div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="flex-shrink-0 h-10 w-10">
                                                                     <img
-                                                                        className="h-10 w-10 rounded-full"
-                                                                        src={"http://localhost:8080/uploads/image/" + item.photo}
+                                                                        className="h-10 w-10 rounded-full "
+                                                                        src={
+                                                                            "http://localhost:8000/" + item.foto
+                                                                        }
                                                                         alt=""
                                                                     />
                                                                 </div>
@@ -303,7 +310,7 @@ export default class User extends React.Component {
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="flex items-center">
                                                                     <div className="text-sm font-medium text-gray-900">
-                                                                        {item.user_name}
+                                                                        {item.nama_user}
                                                                     </div>
                                                                 </div>
                                                             </td>
@@ -313,30 +320,36 @@ export default class User extends React.Component {
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                                {item.role === "admin" &&
+                                                                {item.role === "admin" && (
                                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                                                         {item.role}
                                                                     </span>
-                                                                }
-                                                                {item.role === "resepsionis" &&
+                                                                )}
+                                                                {item.role === "resepsionis" && (
                                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
                                                                         {item.role}
                                                                     </span>
-                                                                }
+                                                                )}
                                                             </td>
-                                                            {this.state.role === "admin" &&
+                                                            {this.state.roleup === "admin" && (
                                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                                    <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEdit(item)}>
+                                                                    <button
+                                                                        className="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2"
+                                                                        onClick={() => this.handleEdit(item)}
+                                                                    >
                                                                         <FontAwesomeIcon
                                                                             icon={faPencilSquare}
                                                                             size="lg"
                                                                         />
                                                                     </button>
-                                                                    <button class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded" onClick={() => this.handleDrop(item.id_user)}>
+                                                                    <button
+                                                                        className="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded"
+                                                                        onClick={() => this.handleDrop(item.id)}
+                                                                    >
                                                                         <FontAwesomeIcon icon={faTrash} size="lg" />
                                                                     </button>
                                                                 </td>
-                                                            }
+                                                            )}
                                                         </tr>
                                                     );
                                                 })}
@@ -371,7 +384,7 @@ export default class User extends React.Component {
                                 <form class="space-y-6" onSubmit={(event) => this.handleSave(event)}>
                                     <div>
                                         <label for="user_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Username User</label>
-                                        <input type="text" name="user_name" id="user_name" value={this.state.user_name} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan username user" required />
+                                        <input type="text" name="nama_user" id="nama_user" value={this.state.nama_user} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan username user" required />
                                     </div>
                                     <div>
                                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Email User</label>
@@ -379,7 +392,18 @@ export default class User extends React.Component {
                                     </div>
                                     <div>
                                         <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Password User</label>
-                                        <input type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan email user" required disabled={this.state.action === "update" ? true : false} />
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            id="password"
+                                            value={this.state.password}
+                                            onChange={this.handleChange}
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
+                                            placeholder="Masukkan email user"
+                                            required
+                                            disabled={this.state.action === "update" ? true : false}
+                                            autocomplete={this.state.password}
+                                        />
                                     </div>
                                     <div>
                                         <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Role</label>
@@ -391,7 +415,7 @@ export default class User extends React.Component {
                                     </div>
                                     <div>
                                         <label for="photo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Photo User</label>
-                                        <input type="file" name="photo" id="photo" placeholder="Pilih photo user" onChange={this.handleFile} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-800 focus:border-gray-800 block w-full px-2 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" required={this.state.action === "update" ? false : true} />
+                                        <input type="file" name="foto" id="foto" placeholder="Pilih photo user" onChange={this.handleFile} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-800 focus:border-gray-800 block w-full px-2 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" required={this.state.action === "update" ? false : true} />
                                     </div>
 
                                     <button type="submit" class="w-full text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Simpan</button>

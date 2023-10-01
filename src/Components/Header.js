@@ -7,13 +7,13 @@ export default class Header extends React.Component {
         this.state = {
             role: "",
             email : "",
-            user_name : ""
+            username : ""
 
         }
 
         this.state.role = localStorage.getItem("role")
         this.state.email = localStorage.getItem("email")
-        this.state.user_name = localStorage.getItem("username")
+        this.state.username = localStorage.getItem("username")
     }
 
     checkRole = () => {
@@ -34,8 +34,17 @@ export default class Header extends React.Component {
                 <div class="header-content flex items-center flex-row">
                     <form action="#">
                         <div class="hidden md:flex relative">
-                        <h1 class="font-bold text-2xl text-gray-700">Dashboard</h1>
-                        </div> 
+                        <a href class="flex flex-row items-center">
+                            <img
+                                src="/assets/5856.jpg"
+                                alt=""
+                                class="h-10 w-10 bg-gray-200 border rounded-full"
+                            />
+                            <span class="flex flex-col ml-2">
+                                <span class=" w-20 font-semibold tracking-wide leading-none">{this.state.email}</span>
+                                <span class="truncate w-20 text-gray-500 text-xs leading-none mt-1">{this.state.role}</span>
+                            </span>
+                        </a>                        </div> 
                         
                         <div class="flex md:hidden">
                             <a href="#" class="flex items-center justify-center h-10 w-10 border-transparent">
@@ -53,7 +62,7 @@ export default class Header extends React.Component {
                             </a>
                         </div>
                     </form>
-                    <div class="flex ml-auto">
+                    {/* <div class="flex ml-auto">
                         <a href class="flex flex-row items-center">
                             <img
                                 src="/assets/5856.jpg"
@@ -61,11 +70,11 @@ export default class Header extends React.Component {
                                 class="h-10 w-10 bg-gray-200 border rounded-full"
                             />
                             <span class="flex flex-col ml-2">
-                                <span class="truncate w-20 font-semibold tracking-wide leading-none">{this.state.user_name}</span>
+                                <span class="truncate w-20 font-semibold tracking-wide leading-none">{this.state.email}</span>
                                 <span class="truncate w-20 text-gray-500 text-xs leading-none mt-1">{this.state.role}</span>
                             </span>
                         </a>
-                    </div>
+                    </div> */}
                 </div>
             </header>
         )

@@ -13,6 +13,7 @@ export default class Dashboard extends React.Component {
             room: [],
             role: "",
             token: "",
+            nama_user:"",
             action: ""
 
         }
@@ -22,6 +23,8 @@ export default class Dashboard extends React.Component {
                 localStorage.getItem("role") === "resepsionis") {
                 this.state.token = localStorage.getItem("token")
                 this.state.role = localStorage.getItem("role")
+                this.state.nama_user = localStorage.getItem("username")
+
             } else {
                 window.alert("You're not admin or resepsionis!")
                 window.location = "/"
@@ -37,12 +40,12 @@ export default class Dashboard extends React.Component {
     }
 
     getUser = () => {
-        let url = "http://localhost:8080/user";
+        let url = "http://localhost:8000/user/getAllUser";
         axios
             .get(url, this.headerConfig())
             .then((response) => {
                 this.setState({
-                    user: response.data.count,
+                    user: response.data.data,
                 });
             })
             .catch((error) => {
@@ -50,25 +53,25 @@ export default class Dashboard extends React.Component {
             });
     };
 
-    getCustomer = () => {
-        let url = "http://localhost:8080/customer/"
-        axios.get(url)
-            .then((response) => {
-                this.setState({
-                    customer: response.data.count
-                })
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
+    // getCustomer = () => {
+    //     let url = "http://localhost:8080/customer/"
+    //     axios.get(url)
+    //         .then((response) => {
+    //             this.setState({
+    //                 customer: response.data.count
+    //             })
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //         })
+    // }
 
     getRoom = () => {
-        let url = "http://localhost:8080/room"
+        let url = "http://localhost:8000/kamar/getAllKamar"
         axios.get(url)
             .then(response => {
                 this.setState({
-                    room: response.data.count
+                    room: response.data.data
                 })
                 console.log(response.data.data)
             })
@@ -78,11 +81,11 @@ export default class Dashboard extends React.Component {
     }
 
     getTypeRoom = () => {
-        let url = "http://localhost:8080/room-type"
+        let url = "http://localhost:8000/tipeKamar/getAllTipe"
         axios.get(url)
             .then(response => {
                 this.setState({
-                    typeroom: response.data.count
+                    typeroom: response.data.data
                 })
                 console.log(response.data.data)
             })
@@ -101,7 +104,7 @@ export default class Dashboard extends React.Component {
 
     componentDidMount() {
         this.getUser();
-        this.getCustomer();
+        // this.getCustomer();
         this.getRoom()
         this.getTypeRoom()
         this.checkRole()
@@ -114,7 +117,7 @@ export default class Dashboard extends React.Component {
                 <main class="main flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
                     <Header />
                     <div class="main-content flex flex-col flex-grow p-4">
-                        <div class="flex flex-row h-40">
+                        {/* <div class="flex flex-row h-40">
                             <div class="w-1/2 text-gray-700 text-center bg-rose-300 px-4 py-2 m-2 rounded-md border-2  border-rose-400 ">
                                 <p class="mt-8 text-xl font-medium">Jumlah User</p>
                                 <p class="text-lg font-bold">{this.state.user}</p>
@@ -133,7 +136,70 @@ export default class Dashboard extends React.Component {
                                 <p class="mt-8 text-xl font-medium">Jumlah Type Room</p>
                                 <p class="text-lg font-bold">{this.state.typeroom}</p>
                             </div>
+                        </div> */}
+                        {/* <div className="hero min-h-screen bg-base-200">
+                            <div className="hero-content text-center">
+                                <div className="max-w-md">
+                                    <h1 className="text-5xl font-bold">Hello there</h1>
+                                    <p className="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
+                                    <button className="btn btn-primary">Get Started</button>
+                                </div>
+                            </div>
+                        </div> */}
+
+                        <section className="dark:bg-gray-800 dark:text-gray-100">
+                            <div className="container mx-auto flex flex-col items-center px-4 py-16 text-center md:py-20 md:px-10 lg:px-32 xl:max-w-3xl">
+                                <h1 className="text-4xl font-bold leading-none sm:text-5xl">Selamat Datang&nbsp;
+                                    <span className="text-purple-700">{this.state.nama_user}</span> Di Cherry Blossom Resort
+                                </h1>
+                                <p className="px-8 mt-8 mb-12 text-lg">kalau ga mau nginep ya gausa sok sok an liat deh </p>
+                                <div className="flex flex-wrap justify-center">
+                                    <button className="px-8 py-3 m-2 text-lg font-semibold rounded dark:bg-violet-400 dark:text-gray-900">Get started</button>
+                                    <button className="px-8 py-3 m-2 text-lg border rounded dark:text-gray-50 dark:border-gray-700">Learn more</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div className="flex w-full mb-2 ">
+                            <div className="grid flex-grow card  place-items-center">
+                                <div className="card w-96 bg-base-100 shadow-xl">
+                                    <div className="card-body">
+                                        <h2 className="card-title">Jumlah User</h2>
+                                        <p>{this.state.user.length}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid  flex-grow card  place-items-center">
+                                <div className="card w-96 bg-base-100 shadow-xl">
+                                    <div className="card-body">
+                                        <h2 className="card-title">Jumlah Customer</h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <div className="flex w-full mb-2">
+                            <div className="grid flex-grow card  place-items-center">
+                                <div className="card w-96 bg-base-100 shadow-xl">
+                                    <div className="card-body">
+                                        <h2 className="card-title">Jumlah Kamar</h2>
+                                        <p>{this.state.room.length}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid  flex-grow card  place-items-center">
+                                <div className="card w-96 bg-base-100 shadow-xl">
+                                    <div className="card-body">
+                                        <h2 className="card-title">Jumlah Tipe Kamar</h2>
+                                        <p>{this.state.typeroom.length}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <footer class="footer px-4 py-2">
                         <div class="footer-content">

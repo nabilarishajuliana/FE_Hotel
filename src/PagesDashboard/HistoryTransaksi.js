@@ -5,26 +5,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilSquare, faSearch } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios"
 import $ from "jquery";
-import moment from 'moment';
+import moment from 'moment'; // buat format tanggal (download)
 
 export default class HistoryTransaksi extends React.Component {
     constructor() {
         super()
         this.state = {
             booking: [],
-            id_booking: "",
-            id_user: "",
-            id_customer: "",
-            id_room_type: "",
-            booking_number: "",
-            name_customer: "",
+            typeroom: [],
+            id: "",
+            userId: "",
+            // id_customer: "",
+            tipeKamarId: "",
+            nomor_pemesanan: "",
+            nama_pemesanan: "",
             email: "",
-            booking_date: "",
-            check_in_date: "",
-            check_out_date: "",
-            guest_name: "",
-            total_room: "",
-            booking_status: "",
+            tgl_pemesanan: "",
+            tgl_check_in: "",
+            tgl_check_out: "",
+            nama_tamu: "",
+            jumlah_kamar: "",
+            status_pemesanan: "",
             role: "",
             token: "",
             action: "",
@@ -65,8 +66,8 @@ export default class HistoryTransaksi extends React.Component {
     handleEditStatus = (item) => {
         $("#modal_booking").show()
         this.setState({
-            id_booking: item.id_booking,
-            booking_status: item.booking_status,
+            id: item.id,
+            status_pemesanan: item.status_pemesanan,
             action: "update"
         })
     }
@@ -75,11 +76,11 @@ export default class HistoryTransaksi extends React.Component {
         e.preventDefault()
 
         let form = {
-            id_booking: this.state.id_booking,
-            booking_status: this.state.booking_status
+            id: this.state.id,
+            status_pemesanan: this.state.status_pemesanan
         }
         if (this.state.action === "update") {
-            let url = "http://localhost:8080/booking/update/status/" + this.state.id_booking
+            let url = "http://localhost:8000/pemesanan/status/" + this.state.id
             axios.put(url, form, this.headerConfig())
                 .then(response => {
                     this.getBooking()
@@ -95,10 +96,10 @@ export default class HistoryTransaksi extends React.Component {
 
     _handleFilter = () => {
         let data = {
-            keyword: this.state.keyword,
+            keyword: this.state.keyword
         }
-        let url = "http://localhost:8080/booking/find/filter"
-        axios.post(url, data)
+        let url = "http://localhost:8000/pemesanan/findPemesanan"
+        axios.post(url, data, this.headerConfig())
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
@@ -116,13 +117,26 @@ export default class HistoryTransaksi extends React.Component {
     }
 
     getBooking = () => {
-        let url = "http://localhost:8080/booking"
+        let url = "http://localhost:8000/pemesanan/getAllKamar"
         axios.get(url)
             .then(response => {
                 this.setState({
                     booking: response.data.data
                 })
                 console.log(response.data.data)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    getTypeRoom = () => {
+        let url = "http://localhost:8000/tipeKamar/getAllTipe"
+        axios.get(url)
+            .then(response => {
+                this.setState({
+                    typeroom: response.data.data
+                })
             })
             .catch((error) => {
                 console.log(error)
@@ -180,31 +194,31 @@ export default class HistoryTransaksi extends React.Component {
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                                     >
-                                                        Booking Number
+                                                        no pemesanan
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                                     >
-                                                        Nama Cust
+                                                        Nama
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                                     >
-                                                        Tipe Room
+                                                        email
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                                     >
-                                                        Total Room
+                                                        jumlah kamar
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                                     >
-                                                        Booking
+                                                        tipe kamar
                                                     </th>
                                                     <th
                                                         scope="col"
@@ -242,30 +256,32 @@ export default class HistoryTransaksi extends React.Component {
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="flex items-center">
                                                                     <div className="text-sm font-medium text-gray-900">
-                                                                        {item.booking_number}
+                                                                        {item.nomor_pemesanan}
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="text-sm text-gray-900">
-                                                                    {item.name_customer}
+                                                                    {item.nama_pemesanan}
                                                                 </div>
                                                             </td>
 
                                                             <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div className="text-sm text-gray-900">
+                                                                    {item.email_pemesanan}
+                                                                </div>
+
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div className="text-sm text-gray-900">
+                                                                    {item.jumlah_kamar}
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap">
                                                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                    {item.room_type.name_room_type}
+                                                                    {item.tipe_kamar.nama_tipe_kamar}
                                                                 </span>
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <div className="text-sm text-gray-900">
-                                                                    {item.total_room}
-                                                                </div>
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <div className="text-sm text-gray-900">
-                                                                    {moment(item.booking_date).format('DD-MM-YYYY')}
-                                                                </div>
+
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="text-sm text-gray-900">
@@ -278,24 +294,24 @@ export default class HistoryTransaksi extends React.Component {
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                                {item.booking_status === "baru" &&
+                                                                {item.status_pemesanan === "baru" &&
                                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                                                                        {item.booking_status}
+                                                                        {item.status_pemesanan}
                                                                     </span>
                                                                 }
-                                                                {item.booking_status === "check_in" &&
+                                                                {item.status_pemesanan === "check_in" &&
                                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                                        {item.booking_status}
+                                                                        {item.status_pemesanan}
                                                                     </span>
                                                                 }
-                                                                {item.booking_status === "check_out" &&
+                                                                {item.status_pemesanan === "check_out" &&
                                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                                        {item.booking_status}
+                                                                        {item.status_pemesanan}
                                                                     </span>
                                                                 }
 
                                                             </td>
-                                                            {this.state.role === 'resepsionis' && (
+                                                            {this.state.role === 'resepsionis' && item.status_pemesanan !== 'check_out' && (
                                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                                     <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEditStatus(item)}>
                                                                         <FontAwesomeIcon
@@ -337,7 +353,7 @@ export default class HistoryTransaksi extends React.Component {
                                 <form class="space-y-6" onSubmit={(event) => this.handleSave(event)}>
                                     <div>
                                         <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Status</label>
-                                        <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black" placeholder="Pilihan status" name="booking_status" value={this.state.booking_status} onChange={this.handleChange} required>
+                                        <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black" placeholder="Pilihan status" name="status_pemesanan" value={this.state.status_pemesanan} onChange={this.handleChange} required>
                                             <option value="">Pilih Status</option>
                                             <option value="baru">Baru</option>
                                             <option value="check_in">Check In</option>
