@@ -8,7 +8,7 @@ export default class Login extends React.Component {
         this.state = {
             email: "",
             password: "",
-            nama_user:"",
+            nama_user: "",
             isModalOpen: false,
             logged: false,
         }
@@ -31,20 +31,44 @@ export default class Login extends React.Component {
             .then(response => {
                 this.setState({ logged: response.data.data.logged })
                 if (response.status === 200) {
-                    let id = response.data.data.id_user
-                    let token = response.data.data.token
-                    let role = response.data.data.role
-                    let email = response.data.data.email
-                    let nama_user = response.data.data.nama_user
-                    localStorage.setItem("id", id)
-                    localStorage.setItem("token", token)
-                    localStorage.setItem("role", role)
-                    localStorage.setItem("email", email)
-                    localStorage.setItem("username", nama_user)
-                    
-                    alert("Success Login")
-                    window.location.href = "/dashboard"
-                    console.log(response.data)
+                    if (response.data.data.role === "admin" || response.data.data.role === "resepsionis") {
+                        let id = response.data.data.id_user
+                        let token = response.data.data.token
+                        let role = response.data.data.role
+                        let email = response.data.data.email
+                        let nama_user = response.data.data.nama_user
+                        let foto = response.data.data.foto
+
+                        localStorage.setItem("id", id)
+                        localStorage.setItem("token", token)
+                        localStorage.setItem("role", role)
+                        localStorage.setItem("email", email)
+                        localStorage.setItem("username", nama_user)
+                        localStorage.setItem("foto", foto)
+
+
+                        alert("Success Login")
+                        window.location.href = "/dashboard"
+                        console.log(response.data)
+                    }
+
+                    else{
+                        let id = response.data.data.id_user
+                        let token = response.data.data.token
+                        let role = response.data.data.role
+                        let email = response.data.data.email
+                        let nama_user = response.data.data.nama_user
+                        localStorage.setItem("id", id)
+                        localStorage.setItem("token", token)
+                        localStorage.setItem("role", role)
+                        localStorage.setItem("email", email)
+                        localStorage.setItem("username", nama_user)
+
+                        alert("Success Login")
+                        window.location.href = "/home"
+                        console.log(response.data)
+                    }
+
                 } else {
                     alert(response.data.message)
                     this.setState({ message: response.data.message })
@@ -55,6 +79,8 @@ export default class Login extends React.Component {
                 console.log("error", error.response.status)
                 if (error.response.status === 500 || error.response.status === 404) {
                     window.alert("Failed to login dashboard");
+                    console.log( error.response.status)
+
                 }
             })
     }

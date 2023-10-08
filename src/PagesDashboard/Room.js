@@ -218,11 +218,11 @@ export default class Room extends React.Component {
                                         value={this.state.keyword}
                                         onChange={this.handleChange}
                                     />
-                                    <button className="w-1/8 ml-2 px-4 text-white bg-blue-100 border border-1 border-blue-600 rounded hover:bg-blue-200" onClick={this._handleFilter}>
-                                        <FontAwesomeIcon icon={faSearch} color="blue" />
+                                    <button className="w-1/8 ml-2 px-4 text-white bg-lime-200 border border-1 rounded hover:bg-lime-300" onClick={this._handleFilter}>
+                                        <FontAwesomeIcon icon={faSearch} color="green" />
                                     </button>
                                     {this.state.role === "admin" &&
-                                        <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => this.handleAdd()}>
+                                        <button className="w-1/3 ml-2 px-4 text-white bg-green-700 rounded hover:bg-green-600" onClick={() => this.handleAdd()}>
                                             <FontAwesomeIcon icon={faPlus} size="" /> Add
                                         </button>
                                     }
@@ -277,7 +277,7 @@ export default class Room extends React.Component {
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-200 text-green-700">
                                                                     {item.tipe_kamar.nama_tipe_kamar}
                                                                 </span>
                                                             </td>

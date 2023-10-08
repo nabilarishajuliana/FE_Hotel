@@ -41,11 +41,11 @@ export default class Rooms extends React.Component {
     handleDetail = (item) => {
         $("#modal_detail").show()
         this.setState({
-            id_room_type: item.id_room_type,
-            name_room_type: item.name_room_type,
-            price: item.price,
-            description: item.description,
-            photo: item.photo
+            id_room_type: item.id,
+            name_room_type: item.nama_tipe_kamar,
+            price: item.harga,
+            description: item.deskripsi,
+            photo: item.foto
 
         })
 
@@ -55,9 +55,10 @@ export default class Rooms extends React.Component {
         let data = {
             keyword: this.state.keyword,
         }
-        let url = "http://localhost:8080/room-type/find/filter"
+        let url = "http://localhost:8000/tipeKamar/findTipeKamar"
         axios.post(url, data)
             .then(response => {
+                console.log(response);
                 if (response.status === 200) {
                     this.setState({
                         typeroom: response.data.data
@@ -74,7 +75,7 @@ export default class Rooms extends React.Component {
     }
 
     getTypeRoom = () => {
-        let url = "http://localhost:8080/room-type"
+        let url = "http://localhost:8000/tipeKamar/getAllTipe"
         axios.get(url)
             .then(response => {
                 this.setState({
@@ -113,37 +114,45 @@ export default class Rooms extends React.Component {
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-4 gap-4 mt-4">
-                        {this.state.typeroom.map((item, index) => (
-                            <div class="col-span-1">
-                                {/* Card untuk type room */}
-                                <div class="CardEvent">
-                                    <div class="max-w-sm rounded overflow-hidden shadow-lg border-2 border-gray-200 bg-gray-100 ">
-                                        <div className='container'>
-                                            <img class="w-full h-48" src={"http://localhost:8080/uploads/image/" + item.photo} />
-                                        </div>
-                                        <div class="px-6 py-4">
-                                            <div class="font-bold text-2xl mb-2">{item.name_room_type}</div>
-                                            <div class="font-bold text-xl mb-2 text-blue-600">{item.price}/night</div>
-                                            <p class="text-gray-700 text-base">
-                                                <LinesEllipsis
-                                                    text={item.description}
-                                                    maxLine="3"
-                                                    ellipsis="..."
-                                                />
-                                            </p>
-                                        </div>
-                                        <div class="px-6 pt-4 pb-2">
-                                            <button class="mb-2 ml-40 bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button" onClick={() => this.handleDetail(item)}>
-                                                Detail
-                                            </button>
+                    <div class="grid grid-cols-3 gap-4 mt-4">
+                    {this.state.typeroom.map((item, index) => {
+                                return (
+                                    <div class="col-span-1">
+                                        {/* Card untuk type room */}
+                                        <div class="CardEvent" key={index}>
+                                            <div class="max-w-sm h-full rounded overflow-hidden shadow-lg border-2 border-gray-200 bg-gray-100">
+                                                <div className='container'>
+                                                    <img class="w-full h-48" src={"http://localhost:8000/" + item.foto} />
+                                                    {/* {this.state.role === "admin" &&
+                                                        <>
+                                                            <button class='btn' onClick={() => this.handleDrop(item.id)}><FontAwesomeIcon icon={faTrash} size="lg" color="red" /></button>
+                                                            <button class='btn1' onClick={() => this.handleEdit(item)}><FontAwesomeIcon icon={faPencilSquare} size="xl" color="orange" /></button>
+                                                        </>
+                                                    } */}
 
+                                                </div>
+                                                <div class="px-6 py-4">
+                                                    <div class="font-bold text-2xl mb-2">{item.nama_tipe_kamar.charAt(0).toUpperCase() + item.nama_tipe_kamar.slice(1)}</div>
+                                                    <div class="font-bold text-xl mb-2 text-blue-600">{item.harga.toLocaleString('id-ID')}/ Night</div>
+                                                    <p class="text-gray-700 text-base">
+                                                        <LinesEllipsis
+                                                            text={item.deskripsi}
+                                                            maxLine="3"
+                                                            ellipsis="..." />
+                                                    </p>
+                                                </div>
+                                                <div class="px-6 pt-4 pb-2">
+                                                    <button class="mb-2 ml-48 bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button" onClick={() => this.handleDetail(item)}>
+                                                        Detail
+                                                    </button>
+
+                                                </div>
+                                            </div>
                                         </div>
+
                                     </div>
-                                </div>
-
-                            </div>
-                        ))}
+                                );
+                            })}
                     </div>
 
                 </div>
@@ -167,7 +176,7 @@ export default class Rooms extends React.Component {
                             <div class="p-6">
 
                                 <div className='container'>
-                                    <img class="rounded-md w-200 h-100" src={"http://localhost:8080/uploads/image/" + this.state.photo} />
+                                    <img class="rounded-md w-200 h-100" src={"http://localhost:8000/" + this.state.photo} />
                                 </div>
                                 <div class="px-2 py-4">
                                     <div class="font-bold text-2xl mb-2">{this.state.name_room_type}</div>

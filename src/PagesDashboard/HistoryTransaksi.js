@@ -99,7 +99,7 @@ export default class HistoryTransaksi extends React.Component {
             keyword: this.state.keyword
         }
         let url = "http://localhost:8000/pemesanan/findPemesanan"
-        axios.post(url, data, this.headerConfig())
+        axios.post(url, data)
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
@@ -177,13 +177,13 @@ export default class HistoryTransaksi extends React.Component {
                                     value={this.state.keyword}
                                     onChange={this.handleChange}
                                 />
-                                <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={this._handleFilter}>
-                                    <FontAwesomeIcon icon={faSearch} size="" />
+                                <button className="w-1/3 ml-2 px-4 text-white bg-lime-200 border-1 rounded hover:bg-lime-300" onClick={this._handleFilter}>
+                                    <FontAwesomeIcon icon={faSearch} size="" color='green'/>
                                 </button>
                             </div>
                         </div>
 
-                        <div className="flex flex-col mt-2 mr-4">
+                        <div className="flex flex-col mt-2 mr-4  ">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                                     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -193,48 +193,70 @@ export default class HistoryTransaksi extends React.Component {
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        style={{ width: "10%" }}
                                                     >
                                                         no pemesanan
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        style={{ width: "10%" }}
                                                     >
-                                                        Nama
+                                                        Nama Tamu
                                                     </th>
                                                     <th
-                                                        scope="col"
-                                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                       scope="col"
+                                                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                       style={{ width: "10%" }}
                                                     >
                                                         email
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        style={{ width: "10%" }}
                                                     >
                                                         jumlah kamar
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        style={{ width: "10%" }}
                                                     >
                                                         tipe kamar
                                                     </th>
+                                                    {/* <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        style={{ width: "10%" }}
+                                                    >
+                                                    tgl Pesan
+                                                    </th> */}
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        style={{ width: "10%" }}
                                                     >
                                                         Check In
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        style={{ width: "10%" }}
                                                     >
                                                         Check Out
                                                     </th>
+                                                    {/* <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        style={{ width: "10%" }}
+                                                    >
+                                                        Nama Tamu
+                                                    </th> */}
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        style={{ width: "10%" }}
                                                     >
                                                         Status
                                                     </th>
@@ -249,7 +271,7 @@ export default class HistoryTransaksi extends React.Component {
 
                                                 </tr>
                                             </thead>
-                                            <tbody className="bg-white divide-y divide-gray-200">
+                                            <tbody className="bg-white divide-y divide-gray-200 ">
                                                 {this.state.booking.map((item, index) => {
                                                     return (
                                                         <tr key={index}>
@@ -262,7 +284,7 @@ export default class HistoryTransaksi extends React.Component {
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="text-sm text-gray-900">
-                                                                    {item.nama_pemesanan}
+                                                                    {item.nama_tamu}
                                                                 </div>
                                                             </td>
 
@@ -283,16 +305,28 @@ export default class HistoryTransaksi extends React.Component {
                                                                 </span>
 
                                                             </td>
+                                                            {/* <td className="px-6 py-4 whitespace-nowrap">
+                                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ">
+                                                                    {moment(item.tgl_pemesanan).format('DD-MM-YYYY')}
+                                                                </span>
+
+                                                            </td> */}
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="text-sm text-gray-900">
-                                                                    {moment(item.check_in_date).format('DD-MM-YYYY')}
+                                                                {moment(item.tgl_check_in).format('DD-MM-YYYY')}
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="text-sm text-gray-900">
-                                                                    {moment(item.check_out_date).format('DD-MM-YYYY')}
+                                                                {moment(item.tgl_check_out).format('DD-MM-YYYY')}
                                                                 </div>
                                                             </td>
+                                                            {/* <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div className="text-sm text-gray-900">
+                                                                    {item.nama_tamu}
+                                                                </div>
+
+                                                            </td> */}
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 {item.status_pemesanan === "baru" &&
                                                                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
@@ -311,6 +345,8 @@ export default class HistoryTransaksi extends React.Component {
                                                                 }
 
                                                             </td>
+                                                            
+                                                            
                                                             {this.state.role === 'resepsionis' && item.status_pemesanan !== 'check_out' && (
                                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                                     <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEditStatus(item)}>

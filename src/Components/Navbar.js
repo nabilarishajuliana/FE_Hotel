@@ -23,6 +23,8 @@ export default class Navbar extends Component {
             localStorage.removeItem("token")
             localStorage.removeItem("role")
             localStorage.removeItem("email")
+            localStorage.removeItem("username")
+
             this.setState({
                 isLogin: false
             })
@@ -53,7 +55,7 @@ export default class Navbar extends Component {
                             </>
                         ) : (
                             <>
-                                <NavLink to="/logincust" className="bg-transparent hover:bg-blue-600 text-blue-600 font-semibold hover:text-white py-2 px-3 border border-blue-500 hover:border-transparent rounded-md mr-4" aria-current="page" id="profile" variant="outlined">Login</NavLink>
+                                <NavLink to="/" className="bg-transparent hover:bg-blue-600 text-blue-600 font-semibold hover:text-white py-2 px-3 border border-blue-500 hover:border-transparent rounded-md mr-4" aria-current="page" id="profile" variant="outlined">Login</NavLink>
                                 <NavLink to="/registercust" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold hover:text-white py-2 px-3 border border-blue-500 hover:border-transparent rounded-md " aria-current="page" id="profile">Register</NavLink>
 
                             </>

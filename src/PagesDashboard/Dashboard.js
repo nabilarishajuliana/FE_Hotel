@@ -44,9 +44,14 @@ export default class Dashboard extends React.Component {
         axios
             .get(url, this.headerConfig())
             .then((response) => {
-                this.setState({
-                    user: response.data.data,
-                });
+                const userData = response.data.data.filter(item => item.role === "admin" || item.role === "resepsionis");
+                const customerData = response.data.data.filter(item => item.role === "customer");
+
+            this.setState({
+                user: userData,
+                customer: customerData,
+
+            });
             })
             .catch((error) => {
                 console.log(error);
@@ -54,12 +59,14 @@ export default class Dashboard extends React.Component {
     };
 
     // getCustomer = () => {
-    //     let url = "http://localhost:8080/customer/"
+    //     let url = "http://localhost:8000/user/getAllUser";
     //     axios.get(url)
     //         .then((response) => {
-    //             this.setState({
-    //                 customer: response.data.count
-    //             })
+    //             const customerData = response.data.data.filter(item => item.role === "customer");
+            
+    //         this.setState({
+    //             customer: customerData,
+    //         });
     //         })
     //         .catch((error) => {
     //             console.log(error)
@@ -148,15 +155,15 @@ export default class Dashboard extends React.Component {
                         </div> */}
 
                         <section className="dark:bg-gray-800 dark:text-gray-100">
-                            <div className="container mx-auto flex flex-col items-center px-4 py-16 text-center md:py-20 md:px-10 lg:px-32 xl:max-w-3xl">
+                            <div className="container mx-auto flex flex-col items-center px-4 py-16  text-center md:py-20 md:px-10 lg:px-32 xl:max-w-3xl">
                                 <h1 className="text-4xl font-bold leading-none sm:text-5xl">Selamat Datang&nbsp;
-                                    <span className="text-purple-700">{this.state.nama_user}</span> Di Cherry Blossom Resort
+                                    <span className="text-red-700">{this.state.nama_user}</span> Di Cherry Blossom Resort
                                 </h1>
-                                <p className="px-8 mt-8 mb-12 text-lg">kalau ga mau nginep ya gausa sok sok an liat deh </p>
-                                <div className="flex flex-wrap justify-center">
+                                <p className="px-8 mt-8 text-lg">kalau ga mau nginep ya gausa sok sok an liat deh </p>
+                                {/* <div className="flex flex-wrap justify-center">
                                     <button className="px-8 py-3 m-2 text-lg font-semibold rounded dark:bg-violet-400 dark:text-gray-900">Get started</button>
                                     <button className="px-8 py-3 m-2 text-lg border rounded dark:text-gray-50 dark:border-gray-700">Learn more</button>
-                                </div>
+                                </div> */}
                             </div>
                         </section>
 
@@ -164,7 +171,7 @@ export default class Dashboard extends React.Component {
                             <div className="grid flex-grow card  place-items-center">
                                 <div className="card w-96 bg-base-100 shadow-xl">
                                     <div className="card-body">
-                                        <h2 className="card-title">Jumlah User</h2>
+                                        <h2 className="card-title text-green-700">Jumlah User</h2>
                                         <p>{this.state.user.length}</p>
                                     </div>
                                 </div>
@@ -173,8 +180,8 @@ export default class Dashboard extends React.Component {
                             <div className="grid  flex-grow card  place-items-center">
                                 <div className="card w-96 bg-base-100 shadow-xl">
                                     <div className="card-body">
-                                        <h2 className="card-title">Jumlah Customer</h2>
-                                        <p></p>
+                                        <h2 className="card-title text-green-700">Jumlah Customer</h2>
+                                        <p>{this.state.customer.length}</p>
                                     </div>
                                 </div>
                             </div>
@@ -184,7 +191,7 @@ export default class Dashboard extends React.Component {
                             <div className="grid flex-grow card  place-items-center">
                                 <div className="card w-96 bg-base-100 shadow-xl">
                                     <div className="card-body">
-                                        <h2 className="card-title">Jumlah Kamar</h2>
+                                        <h2 className="card-title text-green-700">Jumlah Kamar</h2>
                                         <p>{this.state.room.length}</p>
                                     </div>
                                 </div>
@@ -193,7 +200,7 @@ export default class Dashboard extends React.Component {
                             <div className="grid  flex-grow card  place-items-center">
                                 <div className="card w-96 bg-base-100 shadow-xl">
                                     <div className="card-body">
-                                        <h2 className="card-title">Jumlah Tipe Kamar</h2>
+                                        <h2 className="card-title text-green-700">Jumlah Tipe Kamar</h2>
                                         <p>{this.state.typeroom.length}</p>
                                     </div>
                                 </div>

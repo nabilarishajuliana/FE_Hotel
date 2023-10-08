@@ -23,7 +23,7 @@ export default class User extends React.Component {
             email: "",
             password: "",
             role: "",
-            roleup:"",
+            roleup: "",
             token: "",
             action: "",
             keyword: ""
@@ -111,7 +111,7 @@ export default class User extends React.Component {
             nama_user: item.nama_user,
             foto: item.foto,
             email: item.email,
-            password: item.password,
+            password: "",
             role: item.role,
             action: "update"
         })
@@ -125,7 +125,9 @@ export default class User extends React.Component {
         form.append("nama_user", this.state.nama_user)
         form.append("foto", this.state.foto)
         form.append("email", this.state.email)
-        form.append("password", this.state.password)
+        if (this.state.password) {
+            form.append("password", this.state.password);
+          }
         form.append("role", this.state.role)
 
         // let data = {
@@ -228,11 +230,11 @@ export default class User extends React.Component {
                                     value={this.state.keyword}
                                     onChange={this.handleChange}
                                 />
-                                <button className="w-1/8 ml-2 px-4 text-white bg-blue-100 border border-1 border-blue-600 rounded hover:bg-blue-200" onClick={this._handleFilter}>
-                                    <FontAwesomeIcon icon={faSearch} color="blue" />
+                                <button className="w-1/8 ml-2 px-4 text-white bg-lime-200 border border-1  rounded hover:bg-lime-300" onClick={this._handleFilter}>
+                                    <FontAwesomeIcon icon={faSearch} color="green" />
                                 </button>
                                 {this.state.roleup === "admin" &&
-                                    <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => this.handleAdd()}>
+                                    <button className="w-1/3 ml-2 px-4 text-white bg-green-700 rounded hover:bg-green-600" onClick={() => this.handleAdd()}>
                                         <FontAwesomeIcon icon={faPlus} size="" /> Add
                                     </button>
                                 }
@@ -288,21 +290,18 @@ export default class User extends React.Component {
                                                 </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                                {this.state.user.map((item, index) => {
-                                                    return (
+                                                {this.state.user
+                                                    .filter(item => item.role === "admin" || item.role === "resepsionis")
+                                                    .map((filteredItem, index) => (
                                                         <tr key={index}>
                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                                <div className="text-sm text-gray-900">
-                                                                    {index + 1}
-                                                                </div>
+                                                                <div className="text-sm text-gray-900">{index + 1}</div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="flex-shrink-0 h-10 w-10">
                                                                     <img
-                                                                        className="h-10 w-10 rounded-full "
-                                                                        src={
-                                                                            "http://localhost:8000/" + item.foto
-                                                                        }
+                                                                        className="h-10 w-10 rounded-full"
+                                                                        src={"http://localhost:8000/" + filteredItem.foto}
                                                                         alt=""
                                                                     />
                                                                 </div>
@@ -310,49 +309,36 @@ export default class User extends React.Component {
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="flex items-center">
                                                                     <div className="text-sm font-medium text-gray-900">
-                                                                        {item.nama_user}
+                                                                        {filteredItem.nama_user}
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                                <div className="text-sm text-gray-900">
-                                                                    {item.email}
-                                                                </div>
+                                                                <div className="text-sm text-gray-900">{filteredItem.email}</div>
                                                             </td>
                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                                {item.role === "admin" && (
-                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                                        {item.role}
-                                                                    </span>
-                                                                )}
-                                                                {item.role === "resepsionis" && (
-                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
-                                                                        {item.role}
-                                                                    </span>
-                                                                )}
+                                                                <div className="text-sm text-gray-900">{filteredItem.role}</div>
                                                             </td>
                                                             {this.state.roleup === "admin" && (
                                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                                     <button
                                                                         className="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2"
-                                                                        onClick={() => this.handleEdit(item)}
+                                                                        onClick={() => this.handleEdit(filteredItem)}
                                                                     >
-                                                                        <FontAwesomeIcon
-                                                                            icon={faPencilSquare}
-                                                                            size="lg"
-                                                                        />
+                                                                        <FontAwesomeIcon icon={faPencilSquare} size="lg" />
                                                                     </button>
                                                                     <button
                                                                         className="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded"
-                                                                        onClick={() => this.handleDrop(item.id)}
+                                                                        onClick={() => this.handleDrop(filteredItem.id)}
                                                                     >
                                                                         <FontAwesomeIcon icon={faTrash} size="lg" />
                                                                     </button>
                                                                 </td>
                                                             )}
                                                         </tr>
-                                                    );
-                                                })}
+                                                    ))
+                                                }
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -411,6 +397,8 @@ export default class User extends React.Component {
                                             <option value="">Pilih Role</option>
                                             <option value="admin">Admin</option>
                                             <option value="resepsionis">Resepsionis</option>
+                                            <option value="customer">Customer</option>
+
                                         </select>
                                     </div>
                                     <div>

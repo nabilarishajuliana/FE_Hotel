@@ -12,23 +12,24 @@ export default class Customer extends React.Component {
         super();
         this.state = {
             customer: [],
-            id_customer: "",
-            nik: "",
-            customer_name: "",
-            address: "",
+            id: "",
+            nama_user: "",
+            foto: "",
             email: "",
             password: "",
             role: "",
+            roleup: "",
             token: "",
             action: "",
-            keyword: ""
+            keyword: "",
+            check:""
         }
 
         if (localStorage.getItem("token")) {
             if (localStorage.getItem("role") === "admin" ||
                 localStorage.getItem("role") === "resepsionis") {
                 this.state.token = localStorage.getItem("token")
-                this.state.role = localStorage.getItem("role")
+                this.state.roleup = localStorage.getItem("role")
             } else {
                 window.alert("You're not admin or resepsionis!")
                 window.location = "/"
@@ -57,7 +58,7 @@ export default class Customer extends React.Component {
         let data = {
             keyword: this.state.keyword,
         }
-        let url = "http://localhost:8080/customer/find/filter"
+        let url = "http://localhost:8000/user/findUser"
         axios.post(url, data)
             .then(response => {
                 if (response.status === 200) {
@@ -78,12 +79,12 @@ export default class Customer extends React.Component {
     handleAdd = () => {
         $("#modal_customer").show()
         this.setState({
-            id_customer: "",
-            nik: "",
-            customer_name: "",
-            address: "",
+            id: "",
+            nama_user: "",
+            foto: "",
             email: "",
             password: "",
+            role: "Customer",
             action: "insert"
         })
     }
@@ -91,36 +92,58 @@ export default class Customer extends React.Component {
     handleEdit = (item) => {
         $("#modal_customer").show()
         this.setState({
-            id_customer: item.id_customer,
-            nik: item.nik,
-            customer_name: item.customer_name,
-            address: item.address,
+            id: item.id,
+            nama_user: item.nama_user,
+            foto: item.foto,
             email: item.email,
-            password: item.password,
-            action: "update"
+            password: "",
+            role: "customer",
+            action: "update",
+        })
+    }
+
+    handleFile = (e) => {
+        this.setState({
+            foto: e.target.files[0]
         })
     }
 
     handleSave = (e) => {
         e.preventDefault()
+        let form = new FormData()
+        form.append("id", this.state.id)
+        form.append("nama_user", this.state.nama_user)
+        form.append("foto", this.state.foto)
+        form.append("email", this.state.email)
+        if (this.state.password) {
+            form.append("password", this.state.password);
+          }
+          form.append("role", this.state.role)
 
-        let form = {
-            id_customer: this.state.id_customer,
-            nik: this.state.nik,
-            customer_name: this.state.customer_name,
-            address: this.state.address,
-            email: this.state.email,
-            password: this.state.password
-        }
+        // let form = {
+        //     id: this.state.id,
+        //     nama_user: this.state.nama_user,
+        //     foto: this.state.foto,
+        //     email:this.state.email,
+        //     password:this.state.password,
+        //     role:this.state.role
+        // }
+
+        // let forms = new FormData()
+        // form.append("id", this.state.id)
+        // form.append("nama_user", this.state.nama_user)
+        // form.append("foto", this.state.foto)
+        // form.append("email", this.state.email)
+        // form.append("password", this.state.password)
+        // form.append("role", this.state.role)
 
         if (this.state.action === "insert") {
-            let url = "http://localhost:8080/customer/register"
+            let url = "http://localhost:8000/user/addUser"
             axios.post(url, form)
                 .then(response => {
                     this.getCustomer()
                     this.handleClose()
                 })
-
                 .catch(error => {
                     console.log("error add data", error.response.status)
                     if (error.response.status === 500) {
@@ -128,7 +151,7 @@ export default class Customer extends React.Component {
                     }
                 })
         } else {
-            let url = "http://localhost:8080/customer/update/" + this.state.id_customer
+            let url = "http://localhost:8000/user/updateUser/" + this.state.id
             axios.put(url, form, this.headerConfig())
                 .then(response => {
                     this.getCustomer()
@@ -137,12 +160,13 @@ export default class Customer extends React.Component {
                 .catch(error => {
                     console.log(error)
                 })
+
         }
 
     }
 
     handleDrop = (id) => {
-        let url = "http://localhost:8080/customer/delete/" + id
+        let url = "http://localhost:8000/user/deleteUser/" + id
         if (window.confirm("Are you sure to delete this customer ? ")) {
             axios.delete(url, this.headerConfig())
                 .then(response => {
@@ -159,12 +183,14 @@ export default class Customer extends React.Component {
     }
 
     getCustomer = () => {
-        let url = "http://localhost:8080/customer/"
-        axios.get(url)
+        let url = "http://localhost:8000/user/getAllUser"
+        axios.get(url, this.headerConfig())
             .then((response) => {
                 this.setState({
                     customer: response.data.data
                 })
+                console.log(response)
+
             })
             .catch((error) => {
                 console.log(error)
@@ -172,7 +198,7 @@ export default class Customer extends React.Component {
     }
 
     checkRole = () => {
-        if (this.state.role !== "admin" && this.state.role !== "resepsionis") {
+        if (this.state.roleup !== "admin" && this.state.roleup !== "resepsionis") {
             localStorage.clear()
             window.alert("You're not admin or resepsionis!")
             window.location = '/'
@@ -205,11 +231,11 @@ export default class Customer extends React.Component {
                                     value={this.state.keyword}
                                     onChange={this.handleChange}
                                 />
-                                <button className="w-1/8 ml-2 px-4 text-white bg-blue-100 border border-1 border-blue-600 rounded hover:bg-blue-200" onClick={this._handleFilter}>
-                                    <FontAwesomeIcon icon={faSearch} color="blue" />
+                                <button className="w-1/8 ml-2 px-4 text-white bg-lime-200 border border-1  rounded hover:bg-lime-300" onClick={this._handleFilter}>
+                                    <FontAwesomeIcon icon={faSearch} color="green" />
                                 </button>
-                                {this.state.role === "admin" &&
-                                    <button className="w-1/3 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => this.handleAdd()}>
+                                {this.state.roleup === "admin" &&
+                                    <button className="w-1/3 ml-2 px-4 text-white bg-green-700 rounded hover:bg-green-600" onClick={() => this.handleAdd()}>
                                         <FontAwesomeIcon icon={faPlus} size="" /> Add
                                     </button>
                                 }
@@ -233,19 +259,13 @@ export default class Customer extends React.Component {
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                                     >
-                                                        NIK
+                                                        Photo
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                                     >
-                                                        Name
-                                                    </th>
-                                                    <th
-                                                        scope="col"
-                                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                                    >
-                                                        Address
+                                                        Username
                                                     </th>
                                                     <th
                                                         scope="col"
@@ -253,7 +273,8 @@ export default class Customer extends React.Component {
                                                     >
                                                         Email
                                                     </th>
-                                                    {this.state.role === "admin" &&
+
+                                                    {this.state.roleup === "admin" &&
                                                         <th
                                                             scope="col"
                                                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -264,46 +285,52 @@ export default class Customer extends React.Component {
                                                 </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
+
                                                 {this.state.customer.map((item, index) => (
-                                                    <tr key={index}>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="text-sm text-gray-900">{index + 1}</div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="flex items-center">
-                                                                <div className="text-sm font-medium text-gray-900">
-                                                                    {item.nik}
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="flex items-center">
-                                                                <div className="text-sm font-medium text-gray-900">
-                                                                    {item.customer_name}
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="text-sm text-gray-900">
-                                                                {item.address}
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="text-sm text-gray-900">
-                                                                {item.email}
-                                                            </div>
-                                                        </td>
-                                                        {this.state.role === "admin" &&
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEdit(item)}>
-                                                                    <FontAwesomeIcon icon={faPencilSquare} size="lg" />
-                                                                </button>
-                                                                <button class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded" onClick={() => this.handleDrop(item.id_customer)}>
-                                                                    <FontAwesomeIcon icon={faTrash} size="lg" />
-                                                                </button>
-                                                            </td>
-                                                        }
-                                                    </tr>
+
+                                                        item.role === "customer" &&
+                                                            <tr key={index}>
+                                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                                    <div className="text-sm text-gray-900">{index + 1}</div>
+                                                                </td>
+                                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                                    <div className="flex-shrink-0 h-10 w-10">
+                                                                        <img
+                                                                            className="h-10 w-10 rounded-full "
+                                                                            src={
+                                                                                "http://localhost:8000/" + item.foto
+                                                                            }
+                                                                            alt=""
+                                                                        />
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                                    <div className="flex items-center">
+                                                                        <div className="text-sm font-medium text-gray-900">
+                                                                            {item.nama_user}
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                                    <div className="text-sm text-gray-900">
+                                                                        {item.email}
+                                                                    </div>
+                                                                </td>
+
+                                                                {this.state.roleup === "admin" &&
+                                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                                        <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mr-2" onClick={() => this.handleEdit(item)}>
+                                                                            <FontAwesomeIcon icon={faPencilSquare} size="lg" />
+                                                                        </button>
+                                                                        <button class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded" onClick={() => this.handleDrop(item.id)}>
+                                                                            <FontAwesomeIcon icon={faTrash} size="lg" />
+                                                                        </button>
+                                                                    </td>
+                                                                }
+                                                            </tr>
+                                                    
+
+
                                                 ))}
                                             </tbody>
                                         </table>
@@ -332,17 +359,10 @@ export default class Customer extends React.Component {
                                 <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-black">Edit Customer</h3>
                                 <form class="space-y-6" onSubmit={(event) => this.handleSave(event)}>
                                     <div>
-                                        <label for="nik" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">NIK Customer</label>
-                                        <input type="text" name="nik" id="nik" value={this.state.nik} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan NIK customer" required />
+                                        <label for="nama_user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Nama Customer</label>
+                                        <input type="text" name="nama_user" id="nama_user" value={this.state.nama_user} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan Nama Customer" required />
                                     </div>
-                                    <div>
-                                        <label for="customer_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Nama Customer</label>
-                                        <input type="text" name="customer_name" id="customer_name" value={this.state.customer_name} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan nama customer" required />
-                                    </div>
-                                    <div>
-                                        <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Address Customer</label>
-                                        <input type="text" name="address" id="address" value={this.state.address} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan address customer" required />
-                                    </div>
+
                                     <div>
                                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Email Customer</label>
                                         <input type="email" name="email" id="email" value={this.state.email} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan email customer" required />
@@ -350,6 +370,19 @@ export default class Customer extends React.Component {
                                     <div>
                                         <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Password Customer</label>
                                         <input type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" placeholder="Masukkan password customer" required disabled={this.state.action === "update" ? true : false} />
+                                    </div>
+                                    {/* <div>
+                                    <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Role</label>
+                                        <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black" placeholder="Jenis role" name="role" value="customer" onChange={this.handleChange} required>
+                                            <option value="">Pilih Role</option>
+                                            <option value="customer">Customer</option>
+
+                                        </select>
+
+                                    </div> */}
+                                    <div>
+                                        <label for="foto" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800">Photo User</label>
+                                        <input type="file" name="foto" id="foto" placeholder="Pilih photo user" onChange={this.handleFile} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-800 focus:border-gray-800 block w-full px-2 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800" required={this.state.action === "update" ? false : true} />
                                     </div>
 
                                     <button type="submit" class="w-full text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Simpan</button>

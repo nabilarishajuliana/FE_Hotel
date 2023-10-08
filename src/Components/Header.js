@@ -7,13 +7,16 @@ export default class Header extends React.Component {
         this.state = {
             role: "",
             email : "",
-            username : ""
+            username : "",
+            foto:""
 
         }
 
         this.state.role = localStorage.getItem("role")
         this.state.email = localStorage.getItem("email")
         this.state.username = localStorage.getItem("username")
+        this.state.foto = localStorage.getItem("foto")
+
     }
 
     checkRole = () => {
@@ -36,13 +39,13 @@ export default class Header extends React.Component {
                         <div class="hidden md:flex relative">
                         <a href class="flex flex-row items-center">
                             <img
-                                src="/assets/5856.jpg"
+                                src={"http://localhost:8000/" + this.state.foto}
                                 alt=""
                                 class="h-10 w-10 bg-gray-200 border rounded-full"
                             />
                             <span class="flex flex-col ml-2">
-                                <span class=" w-20 font-semibold tracking-wide leading-none">{this.state.email}</span>
-                                <span class="truncate w-20 text-gray-500 text-xs leading-none mt-1">{this.state.role}</span>
+                                <span class=" w-20 font-semibold tracking-wide leading-none text-red-700">{this.state.email}</span>
+                                <span class="truncate w-20 text-gray-500 text-xs leading-none mt-1 text-green-800">{this.state.role}</span>
                             </span>
                         </a>                        </div> 
                         
