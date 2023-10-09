@@ -16,16 +16,17 @@ const PrintElement = (props) => {
     return (
         <div className="mt-4">
             <div className="hotel-invoice">
-                <h1 className="font-bold">Invoice Booking Room</h1>
+                <h1 className="font-bold">Invoice Pemesanan Kamar</h1>
 
                 <div className="invoice-details">
                     <div>
-                        <p><span className="font-semibold">Hotel Name:</span> Slippy</p>
-                        <p><span className="font-semibold mt-2">Address:</span> Malang</p>
-                        <p><span className="font-semibold mt-2">Phone:</span> 0331-1234</p>
+                        <p className="font-bold">Cherry Blossom Resort</p>
+                        <p><span className="font-semibold mt-2">Alamat:</span> Malang</p>
+                        <p><span className="font-semibold mt-2">No.Telp:</span> 0331-1234</p>
                     </div>
                     <div>
-                        <p><span className="font-semibold">Date: </span> {moment(Date.now()).format('DD-MM-YYYY')}</p>
+                    <p><span className="font-semibold mt-2">Nama Pemesan:</span> {item.nama_pemesanan}</p>
+                        <p><span className="font-semibold">Tanggal: </span> {moment(Date.now()).format('DD-MM-YYYY')}</p>
                         <p><span className="font-semibold">Invoice:</span> </p>
                         <span className="mt-1 px-3 py-2 inline-flex text-xl leading-5 font-semibold rounded bg-blue-100 text-blue-800">
                             BOOK - {item.nomor_pemesanan}
@@ -36,11 +37,11 @@ const PrintElement = (props) => {
                 <table className="invoice-items">
                     <thead>
                         <tr>
-                            <th className="p-4 text-left">Type Room</th>
-                            <th className="p-4 text-center">Total-Day</th>
+                            <th className="p-4 text-left">Tipe Kamar</th>
+                            <th className="p-4 text-center">Jumlah Kamar</th>
                             <th className="p-4 text-center">Check In</th>
                             <th className="p-4 text-center">Check Out</th>
-                            <th className="p-4 text-center">Price</th>
+                            <th className="p-4 text-center">Harga</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,8 +131,10 @@ export default class MyBookings extends React.Component {
     _handleFilter = () => {
         let data = {
             keyword: this.state.keyword,
+            // tgl_check_in: this.state.keyword,
+            // tgl_check_out:this.state.keyword
         }
-        let url = "http://localhost:8080/booking/find/filter/" + this.state.id_customer
+        let url = "http://localhost:8000/pemesanan/find/filter/" + this.state.id_customer
         axios.post(url, data)
             .then(response => {
                 if (response.status === 200) {
@@ -153,7 +156,7 @@ export default class MyBookings extends React.Component {
         if (this.state.role !== "customer") {
             localStorage.clear()
             window.alert("You must register or login as customer !")
-            window.location = '/logincust'
+            window.location = '/'
         }
     }
 
@@ -167,7 +170,7 @@ export default class MyBookings extends React.Component {
 
         setTimeout(() => {
             savePDF(element, {
-                fileName: `invoice-${item.booking_number}`
+                fileName: `invoice-${item.nomor_pemesanan}`
             })
             this.setState({
                 isPrint: false
@@ -186,20 +189,20 @@ export default class MyBookings extends React.Component {
                 <Navbar />
 
                 <div className="m-6 pl-6">
-                    <p className="text-xl font-semibold text-blue-600">History </p>
-                    <p className="text-5xl font-bold mt-2">Transaction List</p>
+                    <p className="text-xl font-semibold text-green-700">History </p>
+                    <p className="text-5xl font-bold mt-2">Transaksi Pemesanan</p>
                     <div className="flex mt-6">
                         <div className="flex rounded w-1/2">
                             <input
                                 type="text"
-                                className="w-5/6 block w-full px-4 py-2 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                                className="w-5/6 block w-full px-4 py-2 bg-white border rounded-md focus:border-lime-400 focus:ring-lime-300 focus:outline-none focus:ring focus:ring-opacity-40"
                                 placeholder="Search..."
                                 name="keyword"
                                 value={this.state.keyword}
                                 onChange={this.handleChange}
                             />
-                            <button className="w-1/6 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={this._handleFilter}>
-                                <FontAwesomeIcon icon={faSearch} size="" />
+                            <button className="w-1/6 ml-2 px-4 text-white bg-lime-200 border border-1  rounded hover:bg-lime-300" onClick={this._handleFilter}>
+                                <FontAwesomeIcon icon={faSearch} size="" color="green"/>
                             </button>
                         </div>
                     </div>
@@ -316,12 +319,12 @@ export default class MyBookings extends React.Component {
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {item.status_pemesanan === "baru" &&
-                                                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-lime-100 text-black">
                                                                 {item.status_pemesanan}
                                                             </span>
                                                         }
                                                         {item.status_pemesanan === "check_in" &&
-                                                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-black">
                                                                 {item.status_pemesanan}
                                                             </span>
                                                         }
@@ -332,7 +335,7 @@ export default class MyBookings extends React.Component {
                                                         }
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        <button class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded" onClick={() => this.handlePrint(item)}>
+                                                        <button class="bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded" onClick={() => this.handlePrint(item)}>
                                                             <FontAwesomeIcon icon={faPrint} size="lg" />
                                                         </button>
                                                     </td>

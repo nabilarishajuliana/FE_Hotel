@@ -329,12 +329,12 @@ export default class HistoryTransaksi extends React.Component {
                                                             </td> */}
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 {item.status_pemesanan === "baru" &&
-                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-lime-100 text-black">
                                                                         {item.status_pemesanan}
                                                                     </span>
                                                                 }
                                                                 {item.status_pemesanan === "check_in" &&
-                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-black">
                                                                         {item.status_pemesanan}
                                                                     </span>
                                                                 }
@@ -371,7 +371,7 @@ export default class HistoryTransaksi extends React.Component {
                     </div>
                     <footer class="footer px-4 py-2">
                         <div class="footer-content">
-                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://twitter.com/iaminos">by Erairris</a></p>
+                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://www.instagram.com/nabilarisha01/">by NabilaRisha</a></p>
                         </div>
                     </footer>
                 </main>
@@ -396,7 +396,7 @@ export default class HistoryTransaksi extends React.Component {
                                             <option value="check_out">Check Out</option>
                                         </select>
                                     </div>
-                                    <button type="submit" class="w-full text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Simpan</button>
+                                    <button type="submit" class="w-full text-white bg-gradient-to-br from-lime-500 to-green-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Simpan</button>
                                 </form>
                             </div>
                         </div>

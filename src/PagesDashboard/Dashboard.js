@@ -210,7 +210,7 @@ export default class Dashboard extends React.Component {
                     </div>
                     <footer class="footer px-4 py-2">
                         <div class="footer-content">
-                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://twitter.com/iaminos">by Erairris</a></p>
+                            <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://www.instagram.com/nabilarisha01/">by NabilaRisha</a></p>
                         </div>
                     </footer>
                 </main>

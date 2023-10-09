@@ -79,17 +79,17 @@ export default class Home extends React.Component {
     $("#modal_booking").hide();
   };
 
-  showModal = () => {
+  showModal = (item) => {
     $("#modal_booking").show();
     this.setState({
       // id_user: "",
       // userId: this.state.id_customer,
       // tipeKamarId: "",
-      // nomor_pemesanan: Math.floor(Math.random() * 90000) + 10000,
+      nomor_pemesanan: Math.floor(Math.random() * 90000) + 10000,
       // tgl_pemesanan: moment().format('YYYY-MM-DD'),
-      tipe_kamar: "",
-      tgl_check_in: "",
-      tgl_check_out: "",
+      tipe_kamar: item.nama_tipe_kamar,
+      tgl_check_in: this.state.in,
+      tgl_check_out: this.state.out,
       nama_tamu: "",
       jumlah_kamar: "",
       action: "insert",
@@ -99,7 +99,7 @@ export default class Home extends React.Component {
     let form = {
       // userId: this.state.userId,
       // tipeKamarId: this.state.tipeKamarId,
-      // nomor_pemesanan: this.state.nomor_pemesanan,
+      nomor_pemesanan: this.state.nomor_pemesanan,
       nama_user: this.state.nama_user,
       tipe_kamar: this.state.tipe_kamar,
 
@@ -116,11 +116,15 @@ export default class Home extends React.Component {
         this.getBooking();
         this.handleClose();
         window.location = "/mybookings";
+       
+        
       })
       .catch((error) => {
         console.log("error add data", error);
-        if (error.response.status === 500 || error.response.status === 404) {
-          window.alert("Failed booking room");
+        if (error.response.status === 500 || error.response.status === 404 ) {
+          window.confirm("Failed booking room");
+        }else{
+          window.alert("kamar sudah tidak tersedia untuk tanggal tersebut!");
         }
       });
   };
@@ -136,10 +140,10 @@ export default class Home extends React.Component {
       .then((response) => {
         if (response.status === 200) {
           this.setState({
-            kamars: response.data.room,
+            kamars: response.data.data,
           });
-          console.log(response.data.room);
-          console.log(response.data.bookedRoom);
+          // console.log(response.data.room);
+          // console.log(response.data.bookedRoom);
         } else {
           alert(response.data.message);
           this.setState({ message: response.data.message });
@@ -230,18 +234,20 @@ export default class Home extends React.Component {
             </div>
             <div className="flex flex-col justify-center md:items-start w-full px-2 py-8">
               <p className="py-3 text-5xl md:text-5xl font-bold">
-                Find <span className="text-blue-600">Suitable</span> Room
+                Ciptakan Moment dalam 
+                <span className="text-red-700"> Cherry Blossom</span> 
+                <span className="text-green-700"> Resort</span>
               </p>
-              <p className="text-5xl md:text-5xl font-bold mb-8">
+              {/* <p className="text-5xl md:text-5xl font-bold mb-8">
                 With Slippy.
-              </p>
+              </p> */}
               <p className="text-md mr-12 mb-4">
                 There are many variations of passages of Lorem Ipsum available,
                 but the majority have suffered alteration in some form, by
                 injected humour,or randomised but the majority have suffered
                 alteration{" "}
               </p>
-              {this.state.isLogin ? (
+              {/* {this.state.isLogin ? (
                 <button
                   className="py-2 px-1 sm:w-[25%] my-4 text-white border bg-blue-500 border-blue-500 rounded-md text-lg font-semibold hover:bg-blue-600 hover:text-white"
                   onClick={() => this.showModal()}
@@ -255,7 +261,7 @@ export default class Home extends React.Component {
                 >
                   Booking Now
                 </button>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -264,11 +270,11 @@ export default class Home extends React.Component {
               <div class="flex flex-row">
                 <div className="pr-10 pl-10 pt-5 pb-6">
                   <div class="flex items-center">
-                    <div className="mr-3 bg-blue-200 p-4 rounded-md h-auto">
+                    <div className="mr-3 bg-green-200 p-4 rounded-md h-auto">
                       <FontAwesomeIcon
                         icon={faCalendar}
                         size="2x"
-                        color="blue"
+                        color="green"
                       />
                     </div>
                     <div>
@@ -277,7 +283,7 @@ export default class Home extends React.Component {
                         type="date"
                         name="in"
                         id="in"
-                        className="border-2 border-blue-400 rounded-md p-1"
+                        className="border-2 border-green-700 rounded-md p-1"
                         value={this.state.in}
                         onChange={this.handleChange}
                         min={today}
@@ -287,11 +293,11 @@ export default class Home extends React.Component {
                 </div>
                 <div className="pr-10 pl-4 pt-5 pb-6">
                   <div class="flex items-center">
-                    <div className="mr-3 bg-blue-200 p-4 rounded-md h-auto">
+                    <div className="mr-3 bg-red-200 p-4 rounded-md h-auto">
                       <FontAwesomeIcon
                         icon={faCalendar}
                         size="2x"
-                        color="blue"
+                        color="red"
                       />
                     </div>
                     <div>
@@ -300,7 +306,7 @@ export default class Home extends React.Component {
                         type="date"
                         name="out"
                         id="out"
-                        className="border-2 border-blue-400 rounded-md p-1"
+                        className="border-2 border-red-700 rounded-md p-1"
                         value={this.state.out}
                         onChange={this.handleChange}
                         min={this.state.tgl_check_in}
@@ -310,7 +316,7 @@ export default class Home extends React.Component {
                 </div>
                 <div className="pr-2 pl-2 pt-9 pb-6">
                   <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold p-2 pr-3 pl-3 w-full rounded focus:outline-none focus:shadow-outline"
+                    className="bg-gray-600 hover:bg-gray-700 text-white font-semibold p-2 pr-3 pl-3 w-full rounded focus:outline-none focus:shadow-outline"
                     onClick={this._handleFilter}
                   >
                     Check Rooms
@@ -326,7 +332,7 @@ export default class Home extends React.Component {
           {this.state.kamars.length > 0 && (
             <div className="m-6 pl-6">
               <p className="text-5xl font-bold mt-2">
-                <span className="text-blue-600">Available</span> Room{" "}
+                <span className="text-green-700">Available</span> Room{" "}
               </p>
 
               <div class="grid grid-cols-4 gap-4 mt-8">
@@ -345,8 +351,8 @@ export default class Home extends React.Component {
                           <div class="font-bold text-2xl mb-2">
                             {item.nama_tipe_kamar}
                           </div>
-                          <div class="font-bold text-xl mb-2 text-blue-600">
-                            Rp {item.harga}/night
+                          <div class="font-semibold text-xl mb-2 ">
+                            Rp {item.harga.toLocaleString('id-ID')} <span className='text-green-600'>/ Night</span>
                           </div>
                           <p class="text-gray-700 text-base">
                             <LinesEllipsis
@@ -360,8 +366,8 @@ export default class Home extends React.Component {
                                                     </div> */}
                         </div>
                         <div class="px-6 pt-4 pb-2">
-                          <button class="mb-2 ml-40 bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button" onClick={() => this.handleDetail(item)}>
-                                                        Detail
+                          <button class="mb-2 ml-40  bg-green-600 hover:bg-green-700 text-white  font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button" onClick={() => this.showModal(item)}>
+                                                        Pesan
                                                     </button>
                         </div>
                       </div>

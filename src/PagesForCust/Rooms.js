@@ -96,25 +96,25 @@ export default class Rooms extends React.Component {
             <div>
                 <Navbar />
                 <div className="m-6 pl-6 ">
-                    <p className="text-xl font-semibold text-blue-600">Beautiful Room </p>
+                    <p className="text-xl font-semibold text-green-700">Beautiful Room </p>
                     <p className="text-5xl font-bold mt-2">Best Room For You</p>
                     <div className="flex mt-6">
                         <div className="flex rounded w-1/2">
                             <input
                                 type="text"
-                                className="w-5/6 block w-full px-4 py-2 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                                className="w-5/6 block w-full px-4 py-2 bg-white border rounded-md focus:border-lime-400 focus:ring-lime-300 focus:outline-none focus:ring focus:ring-opacity-40"
                                 placeholder="Search..."
                                 name="keyword"
                                 value={this.state.keyword}
                                 onChange={this.handleChange}
                             />
-                            <button className="w-1/6 ml-2 px-4 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={this._handleFilter}>
-                                <FontAwesomeIcon icon={faSearch} size="" />
+                            <button className="w-1/6 ml-2 px-4 text-white  bg-lime-200 border border-1  rounded hover:bg-lime-300" onClick={this._handleFilter}>
+                                <FontAwesomeIcon icon={faSearch} size="" color="green"/>
                             </button>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-4 mt-4">
+                    <div class="grid grid-cols-4 gap-4 mt-4">
                     {this.state.typeroom.map((item, index) => {
                                 return (
                                     <div class="col-span-1">
@@ -133,7 +133,7 @@ export default class Rooms extends React.Component {
                                                 </div>
                                                 <div class="px-6 py-4">
                                                     <div class="font-bold text-2xl mb-2">{item.nama_tipe_kamar.charAt(0).toUpperCase() + item.nama_tipe_kamar.slice(1)}</div>
-                                                    <div class="font-bold text-xl mb-2 text-blue-600">{item.harga.toLocaleString('id-ID')}/ Night</div>
+                                                    <div class="font-bold text-xl mb-2 ">{item.harga.toLocaleString('id-ID')}<span className='text-green-600'> / Night</span></div>
                                                     <p class="text-gray-700 text-base">
                                                         <LinesEllipsis
                                                             text={item.deskripsi}
@@ -141,8 +141,8 @@ export default class Rooms extends React.Component {
                                                             ellipsis="..." />
                                                     </p>
                                                 </div>
-                                                <div class="px-6 pt-4 pb-2">
-                                                    <button class="mb-2 ml-48 bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button" onClick={() => this.handleDetail(item)}>
+                                                <div class=" px-6 pt-4 pb-2">
+                                                    <button class="mb-2 ml-36 bg-green-600 hover:bg-green-700 text-white font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button" onClick={() => this.handleDetail(item)}>
                                                         Detail
                                                     </button>
 
@@ -179,8 +179,8 @@ export default class Rooms extends React.Component {
                                     <img class="rounded-md w-200 h-100" src={"http://localhost:8000/" + this.state.photo} />
                                 </div>
                                 <div class="px-2 py-4">
-                                    <div class="font-bold text-2xl mb-2">{this.state.name_room_type}</div>
-                                    <div class="font-bold text-xl mb-2 text-blue-600">{this.state.price}/night</div>
+                                <div class="font-bold text-2xl mb-2">{this.state.name_room_type.charAt(0).toUpperCase() + this.state.name_room_type.slice(1)}</div>
+                                    <div class="font-bold text-xl mb-2 ">{this.state.price.toLocaleString('id-ID')} <span className='text-green-600'>/ Night</span></div>
                                     <p class="text-black-700 text-base">
                                         {this.state.description}
                                     </p>
