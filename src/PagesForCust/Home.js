@@ -111,20 +111,21 @@ export default class Home extends React.Component {
     };
     let url = "http://localhost:8000/pemesanan/addPemesanan";
     axios
-      .post(url, form)
+      .post(url, form, this.headerConfig())
       .then((response) => {
         this.getBooking();
         this.handleClose();
         window.location = "/mybookings";
-       
-        
       })
       .catch((error) => {
         console.log("error add data", error);
-        if (error.response.status === 500 || error.response.status === 404 ) {
+        if (error.response.status === 500 || error.response.status === 404) {
           window.confirm("Failed booking room");
-        }else{
+        } else if (error.response.status === 400) {
           window.alert("kamar sudah tidak tersedia untuk tanggal tersebut!");
+        } else {
+          console.log("error add data", error);
+          window.confirm("Failed booking room");
         }
       });
   };
@@ -224,30 +225,36 @@ export default class Home extends React.Component {
           className="relative bg-gray-50 flex flex-col justify-between"
         >
           <Navbar />
-          <div className="grid md:grid-cols-2 max-w-[1240px] m-auto">
-            <div>
-              <img
-                className="mt-6 ml-32 mb-10 w-3/5 h-96"
-                src="/assets/PhotoHome.png"
-                alt="/"
-              />
-            </div>
-            <div className="flex flex-col justify-center md:items-start w-full px-2 py-8">
-              <p className="py-3 text-5xl md:text-5xl font-bold">
-                Ciptakan Moment dalam 
-                <span className="text-red-700"> Cherry Blossom</span> 
-                <span className="text-green-700"> Resort</span>
-              </p>
-              {/* <p className="text-5xl md:text-5xl font-bold mb-8">
+          <div className="relative bg-slate-400">
+            <img
+              src="https://images.pexels.com/photos/1001965/pexels-photo-1001965.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              className="absolute inset-0 object-cover w-full h-full opacity-20"
+              alt=""
+            />
+            <div className="relative grid md:grid-cols-2 max-w-[1240px] m-auto">
+              <div>
+                <img
+                  className="mt-6 ml-32 mb-10 w-3/5 h-96"
+                  src="/assets/PhotoHome.png"
+                  alt="/"
+                />
+              </div>
+              <div className="flex flex-col justify-center md:items-start w-full px-2 py-8">
+                <p className="py-3 text-5xl md:text-5xl font-bold  ">
+                  Ciptakan Moment dalam
+                  <span className="text-red-700"> Cherry Blossom</span>
+                  <span className="text-green-700"> Resort</span>
+                </p>
+                {/* <p className="text-5xl md:text-5xl font-bold mb-8">
                 With Slippy.
               </p> */}
-              <p className="text-md mr-12 mb-4">
-                There are many variations of passages of Lorem Ipsum available,
-                but the majority have suffered alteration in some form, by
-                injected humour,or randomised but the majority have suffered
-                alteration{" "}
-              </p>
-              {/* {this.state.isLogin ? (
+                <p className="text-md mr-12 mb-4">
+                  There are many variations of passages of Lorem Ipsum
+                  available, but the majority have suffered alteration in some
+                  form, by injected humour,or randomised but the majority have
+                  suffered alteration{" "}
+                </p>
+                {/* {this.state.isLogin ? (
                 <button
                   className="py-2 px-1 sm:w-[25%] my-4 text-white border bg-blue-500 border-blue-500 rounded-md text-lg font-semibold hover:bg-blue-600 hover:text-white"
                   onClick={() => this.showModal()}
@@ -262,10 +269,10 @@ export default class Home extends React.Component {
                   Booking Now
                 </button>
               )} */}
+              </div>
             </div>
-          </div>
 
-          <div class="flex flex-col mr-19 ml-11 mb-8">
+            <div class="relative flex flex-col mr-19 ml-11 mb-8">
             <div class="ml-48 w-3/5 bg-white-200 border-2 border-grey rounded-lg shadow h-auto">
               <div class="flex flex-row">
                 <div className="pr-10 pl-10 pt-5 pb-6">
@@ -325,6 +332,9 @@ export default class Home extends React.Component {
               </div>
             </div>
           </div>
+          </div>
+
+          
 
           {/* ini buat available room */}
           <>{/* ini buat tempat yang dihapus */}</>
@@ -352,7 +362,8 @@ export default class Home extends React.Component {
                             {item.nama_tipe_kamar}
                           </div>
                           <div class="font-semibold text-xl mb-2 ">
-                            Rp {item.harga.toLocaleString('id-ID')} <span className='text-green-600'>/ Night</span>
+                            Rp {item.harga.toLocaleString("id-ID")}{" "}
+                            <span className="text-green-600">/ Night</span>
                           </div>
                           <p class="text-gray-700 text-base">
                             <LinesEllipsis
@@ -366,9 +377,30 @@ export default class Home extends React.Component {
                                                     </div> */}
                         </div>
                         <div class="px-6 pt-4 pb-2">
-                          <button class="mb-2 ml-40  bg-green-600 hover:bg-green-700 text-white  font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline" type="button" onClick={() => this.showModal(item)}>
-                                                        Pesan
-                                                    </button>
+                          {/* <button
+                            class="mb-2 ml-40  bg-green-600 hover:bg-green-700 text-white  font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline"
+                            type="button"
+                            onClick={() => this.showModal(item)}
+                          >
+                            Pesan
+                          </button> */}
+                          {this.state.isLogin ? (
+                            <button
+                              class="mb-2 ml-40  bg-green-600 hover:bg-green-700 text-white  font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline"
+                              type="button"
+                              onClick={() => this.showModal(item)}
+                            >
+                              Pesan
+                            </button>
+                          ) : (
+                            <button
+                              class="mb-2 ml-40  bg-green-600 hover:bg-green-700 text-white  font-bold p-2 w-1/3 rounded focus:outline-none focus:shadow-outline"
+                              type="button"
+                              onClick={() => this.showAlertMustLogin()}
+                            >
+                              Pesan
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -509,6 +541,7 @@ export default class Home extends React.Component {
                         placeholder="Total room your booked"
                         value={this.state.jumlah_kamar}
                         onChange={this.handleChange}
+                        min="1"
                         required
                       />
                     </div>
@@ -573,8 +606,7 @@ export default class Home extends React.Component {
                         required
                       />
                     </div>
-                    <div>
-                    </div>
+                    <div></div>
                     <button
                       type="submit"
                       class="w-full text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"

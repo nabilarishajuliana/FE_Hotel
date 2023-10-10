@@ -116,7 +116,7 @@ export default class MyBookings extends React.Component {
 
     getBookingByCust = () => {
         let url = "http://localhost:8000/pemesanan/customer/" + this.state.id_customer
-        axios.get(url)
+        axios.get(url,this.headerConfig())
             .then(response => {
                 this.setState({
                     booking: response.data.data
@@ -135,7 +135,7 @@ export default class MyBookings extends React.Component {
             // tgl_check_out:this.state.keyword
         }
         let url = "http://localhost:8000/pemesanan/find/filter/" + this.state.id_customer
-        axios.post(url, data)
+        axios.post(url, data,this.headerConfig())
             .then(response => {
                 if (response.status === 200) {
                     this.setState({

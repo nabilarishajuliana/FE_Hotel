@@ -71,7 +71,7 @@ export default class User extends React.Component {
             keyword: this.state.keyword,
         }
         let url = "http://localhost:8000/user/findUser"
-        axios.post(url, data, this.headerConfig())
+        axios.post(url, data)
             .then(response => {
                 if (response.status === 200) {
                     this.setState({
