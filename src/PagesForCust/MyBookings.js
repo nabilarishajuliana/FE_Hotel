@@ -20,7 +20,7 @@ const PrintElement = (props) => {
 
                 <div className="invoice-details">
                     <div>
-                        <p className="font-bold">Cherry Blossom Resort</p>
+                        <p className="font-bold text-red-800">Cherry Blossom <span className="text-green-700">Resort</span></p>
                         <p><span className="font-semibold mt-2">Alamat:</span> Malang</p>
                         <p><span className="font-semibold mt-2">No.Telp:</span> 0331-1234</p>
                     </div>

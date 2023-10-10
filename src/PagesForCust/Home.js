@@ -225,13 +225,8 @@ export default class Home extends React.Component {
           className="relative bg-gray-50 flex flex-col justify-between"
         >
           <Navbar />
-          <div className="relative bg-slate-400">
-            <img
-              src="https://images.pexels.com/photos/1001965/pexels-photo-1001965.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-              className="absolute inset-0 object-cover w-full h-full opacity-20"
-              alt=""
-            />
-            <div className="relative grid md:grid-cols-2 max-w-[1240px] m-auto">
+           
+            <div className=" grid md:grid-cols-2 max-w-[1240px] m-auto">
               <div>
                 <img
                   className="mt-6 ml-32 mb-10 w-3/5 h-96"
@@ -272,7 +267,7 @@ export default class Home extends React.Component {
               </div>
             </div>
 
-            <div class="relative flex flex-col mr-19 ml-11 mb-8">
+            <div class=" flex flex-col mr-19 ml-11 mb-8">
             <div class="ml-48 w-3/5 bg-white-200 border-2 border-grey rounded-lg shadow h-auto">
               <div class="flex flex-row">
                 <div className="pr-10 pl-10 pt-5 pb-6">
@@ -331,7 +326,6 @@ export default class Home extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
           </div>
 
           

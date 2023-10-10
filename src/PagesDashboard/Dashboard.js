@@ -123,7 +123,13 @@ export default class Dashboard extends React.Component {
                 <Sidebar />
                 <main class="main flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
                     <Header />
-                    <div class="main-content flex flex-col flex-grow p-4">
+                    <div className='relative'>
+                    <img
+        src="https://images.pexels.com/photos/3747463/pexels-photo-3747463.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
+        className="absolute inset-0 object-cover w-full h-full opacity-20"
+        alt=""
+      />
+                        <div class="relative main-content flex flex-col flex-grow p-4">
                         {/* <div class="flex flex-row h-40">
                             <div class="w-1/2 text-gray-700 text-center bg-rose-300 px-4 py-2 m-2 rounded-md border-2  border-rose-400 ">
                                 <p class="mt-8 text-xl font-medium">Jumlah User</p>
@@ -157,9 +163,9 @@ export default class Dashboard extends React.Component {
                         <section className="dark:bg-gray-800 dark:text-gray-100">
                             <div className="container mx-auto flex flex-col items-center px-4 py-16  text-center md:py-20 md:px-10 lg:px-32 xl:max-w-3xl">
                                 <h1 className="text-4xl font-bold leading-none sm:text-5xl">Selamat Datang&nbsp;
-                                    <span className="text-red-700">{this.state.nama_user}</span> Di Cherry Blossom Resort
+                                    <span className="text-red-700">{this.state.nama_user.charAt(0).toUpperCase() + this.state.nama_user.slice(1)}</span> Di Cherry Blossom Resort
                                 </h1>
-                                <p className="px-8 mt-8 text-lg">kalau ga mau nginep ya gausa sok sok an liat deh </p>
+                                <p className="px-8 mt-8 text-lg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nec massa nec dui congue varius tempus ut nulla. Maecenas nec vehicula leo, nec congue lacus. Proin a pellentesque velit.</p>
                                 {/* <div className="flex flex-wrap justify-center">
                                     <button className="px-8 py-3 m-2 text-lg font-semibold rounded dark:bg-violet-400 dark:text-gray-900">Get started</button>
                                     <button className="px-8 py-3 m-2 text-lg border rounded dark:text-gray-50 dark:border-gray-700">Learn more</button>
@@ -208,6 +214,8 @@ export default class Dashboard extends React.Component {
                         </div>
 
                     </div>
+                    </div>
+                    
                     <footer class="footer px-4 py-2">
                         <div class="footer-content">
                             <p class="text-sm text-gray-600 text-center">© Brandname 2023. All rights reserved. <a href="https://www.instagram.com/nabilarisha01/">by NabilaRisha</a></p>

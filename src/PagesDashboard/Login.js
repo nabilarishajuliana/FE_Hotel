@@ -130,8 +130,8 @@ export default class Login extends React.Component {
       <section className="relative flex flex-wrap lg:h-screen lg:items-center bg-amber-50 bg-opacity-40">
         <div className="w-full px-4 py-12 sm:px-6 sm:py-16 lg:w-1/2 lg:px-8 lg:py-24">
           <div className="mx-auto max-w-lg text-center">
-            <h1 className="text-2xl font-bold sm:text-3xl text-green-700">
-              Log In your<span className="text-red-800"> Account!</span> 
+            <h1 className="text-2xl font-bold sm:text-3xl  text-red-800">
+              Log In Cherry Blossom<span className="text-green-700"> Resort!</span> 
             </h1>
 
             <p className="mt-4 text-gray-700">
